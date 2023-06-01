@@ -9,8 +9,8 @@ const MultipleChoiceSelector = () => {
     //import monserrat font.
     const loadFonts = async () => {
         await Font.loadAsync({
-            'montserrat-regular': require('./assets/Montserrat/static/Montserrat-Regular.ttf'),
-            'montserrat-bold': require('./assets/Montserrat/static/Montserrat-Bold.ttf'),
+            'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
+            'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
             // Add other font styles if needed
         });
     };
@@ -64,20 +64,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 30,
-        marginBottom: 40,
     },
     optionButton: {
         paddingVertical: 15,
         borderRadius: 50,
-        backgroundColor: 'rgba(140, 20, 252,0.7)',
+        backgroundColor: 'rgba(140, 20, 252,0.9)',
         marginStart: 10,
         width: 150,
     },
     selectedOptionButton: {
-        backgroundColor: 'rgb(11,206,131)',
+        backgroundColor: 'rgba(11,206,131,0.9)',
     },
     optionButtonText: {
-        color: 'rgba(240,240,240,1)',
+        color: 'rgba(240,240,240,0.9)',
         fontWeight: 'bold',
         textAlign: 'center',
         fontFamily: "montserrat-regular"
