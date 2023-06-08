@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
-import {auth} from '../config/firebase.js';
+import {auth} from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
