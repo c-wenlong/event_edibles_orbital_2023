@@ -15,7 +15,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView,
 const SignupPage = ({ navigation }) => {
     // FireBase Authentication
     const auth = getAuth();
-    // UserInput States
+    // Variable States
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -24,29 +24,29 @@ const SignupPage = ({ navigation }) => {
     const [showCPassword, setShowCPassword] = useState(false);
     // Test Cases for SignUp (Authentication)
     const handleSignup = async () => {
-        // Handle Signup logic
+        // Handle invalid input case
         if (username.trim() === '' || password.trim() === '') {
-            // Handle invalid input case
             alert('Please enter a valid name and password');
+        // Handle invalid name case
         } else if (username.length < 5 || username.length > 20) {
-            // Handle invalid name case
             alert('Name should be between 5 and 20 characters');
+        // Handle invalid email case
         } else if (!email.endsWith("@u.nus.edu")) {
-            // Handle invalid email case
-            alert("Invalid Email: email should end @u.nus.edu")
+            alert("Invalid Email: email should end @u.nus.edu");
+        // Handle invalid password case
         } else if (password.length < 8 || password.length > 16) {
-            // Handle invalid password case
             alert('Password should be between 8 and 16 characters');
+        // Handle password mismatch
         } else if (password !== cpassword) {
-            // Handle password mismatch
             alert('Password should match with confirm passsword')
+        // Handle Firebase Authentication
         } else {
-            // Handle Firebase Authentication
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                console.log('Signed up with:', user.email);
+                //console.log('Signed up with:', user.email);
                 navigation.navigate('HomePage');
+            // Handle Existing Account Fault
             } catch (ReferenceError) {
                 alert("This is an existing account, please log in.");
             }

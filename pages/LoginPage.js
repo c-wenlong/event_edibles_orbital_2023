@@ -1,5 +1,4 @@
 // Aesthetics
-import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
@@ -13,18 +12,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView,
 
 
 const LoginPage = ({ navigation }) => {
-    // Load Fonts
-    const loadFonts = async () => {
-        await Font.loadAsync({
-            'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
-            'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
-            // Add other font styles if needed
-        });
-    };
-    useEffect(() => {
-        loadFonts();
-    }, []);
-
     // Firebase Authentication
     const auth = getAuth();
 

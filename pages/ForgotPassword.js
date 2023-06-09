@@ -1,22 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 
 const ForgotPassword = ({ navigation }) => {
-    // Load Fonts
-    const loadFonts = async () => {
-        await Font.loadAsync({
-            'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
-            'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
-            // Add other font styles if needed
-        });
-    };
-    useEffect(() => {
-        loadFonts();
-    }, []);
-
     // UserInput State
     const [email, setEmail] = useState('');
 
