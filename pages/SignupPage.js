@@ -10,7 +10,7 @@ import { auth } from "../firebase/firebase.js";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const SignupPage = ({ navigation }) => {
     // FireBase Authentication
@@ -27,26 +27,26 @@ const SignupPage = ({ navigation }) => {
         // Handle invalid input case
         if (username.trim() === '' || password.trim() === '') {
             alert('Please enter a valid name and password');
-        // Handle invalid name case
+            // Handle invalid name case
         } else if (username.length < 5 || username.length > 20) {
             alert('Name should be between 5 and 20 characters');
-        // Handle invalid email case
+            // Handle invalid email case
         } else if (!email.endsWith("@u.nus.edu")) {
             alert("Invalid Email: email should end @u.nus.edu");
-        // Handle invalid password case
+            // Handle invalid password case
         } else if (password.length < 8 || password.length > 16) {
             alert('Password should be between 8 and 16 characters');
-        // Handle password mismatch
+            // Handle password mismatch
         } else if (password !== cpassword) {
             alert('Password should match with confirm passsword')
-        // Handle Firebase Authentication
+            // Handle Firebase Authentication
         } else {
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 //console.log('Signed up with:', user.email);
                 navigation.navigate('HomePage');
-            // Handle Existing Account Fault
+                // Handle Existing Account Fault
             } catch (ReferenceError) {
                 alert("This is an existing account, please log in.");
             }
@@ -100,79 +100,78 @@ const SignupPage = ({ navigation }) => {
     // App Interface
     return (
         <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior="padding"
-            >
-                <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Sign Up </Text>
-                </View>
-                <View style={styles.header2Container}>
-                    <Text style={styles.text}>
-                        Are you a ...
-                    </Text>
-                    <MultipleChoiceSelector />
-                </View>
-                <View style={styles.bodyContainer}>
-                    <Text style={styles.caption}> Full Name </Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="John Doe"
-                        value={username}
-                        onChangeText={text => setUsername(text)}
-                    />
-
-                    <Text style={styles.caption}> NUS Email </Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="exxxxxxx@u.nus.edu"
-                        value={email}
-                        onChangeText={text => setEmail(text)}
-                    />
-
-                    <Text style={styles.caption}> Password </Text>
-                    <View style={styles.input}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView
+                    style={styles.container}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                >
+                    <View style={styles.header2Container}>
+                        <Text style={styles.text}>
+                            Are you a ...
+                        </Text>
+                        <MultipleChoiceSelector />
+                    </View>
+                    <View style={styles.bodyContainer}>
+                        <Text style={styles.caption}> Full Name </Text>
                         <TextInput
-                            style={styles.incognito}
-                            placeholder="Password"
-                            secureTextEntry={!showPassword}
-                            value={password}
-                            onChangeText={text => setPassword(text)}
+                            style={styles.input}
+                            placeholder="John Doe"
+                            value={username}
+                            onChangeText={text => setUsername(text)}
                         />
-                        <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
-                            <Ionicons
-                                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                size={24}
-                                color="gray"
+
+                        <Text style={styles.caption}> NUS Email </Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="exxxxxxx@u.nus.edu"
+                            value={email}
+                            onChangeText={text => setEmail(text)}
+                        />
+
+                        <Text style={styles.caption}> Password </Text>
+                        <View style={styles.input}>
+                            <TextInput
+                                style={styles.incognito}
+                                placeholder="Password"
+                                secureTextEntry={!showPassword}
+                                value={password}
+                                onChangeText={text => setPassword(text)}
                             />
+                            <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
+                                <Ionicons
+                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                    size={24}
+                                    color="gray"
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text style={styles.caption}> Confirm Password</Text>
+                        <View style={styles.input}>
+                            <TextInput
+                                style={styles.incognito}
+                                placeholder="Password"
+                                secureTextEntry={!showCPassword}
+                                value={cpassword}
+                                onChangeText={text => setCPassword(text)}
+                            />
+                            <TouchableOpacity style={styles.eyecon} onPress={toggleCPasswordVisibility}>
+                                <Ionicons
+                                    name={showCPassword ? 'eye-off-outline' : 'eye-outline'}
+                                    size={24}
+                                    color="gray"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                            <Text style={styles.buttonText}>Let's Go!</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
+                            <Text style={styles.nav}>Existing user? Log in</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <Text style={styles.caption}> Confirm Password</Text>
-                    <View style={styles.input}>
-                        <TextInput
-                            style={styles.incognito}
-                            placeholder="Password"
-                            secureTextEntry={!showCPassword}
-                            value={cpassword}
-                            onChangeText={text => setCPassword(text)}
-                        />
-                        <TouchableOpacity style={styles.eyecon} onPress={toggleCPasswordVisibility}>
-                            <Ionicons
-                                name={showCPassword ? 'eye-off-outline' : 'eye-outline'}
-                                size={24}
-                                color="gray"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={styles.button} onPress={handleSignup}>
-                        <Text style={styles.buttonText}>Let's Go!</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
-                        <Text style={styles.nav}>Existing user? Log in</Text>
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </ImageBackground>
     );
 
@@ -186,16 +185,6 @@ const styles = StyleSheet.create({
         padding: 16,
         marginTop: 0,
     },
-    headerContainer: {
-        flex: 1,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        fontSize: 30,
-        fontFamily: 'montserrat-bold',
-    },
     header2Container: {
         flex: 2,
         width: "100%",
@@ -206,7 +195,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     text: {
-        fontFamily: "montserrat-regular",
+        fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: "left",
         width: 300,

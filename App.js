@@ -17,12 +17,12 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{
-        headerShown: false
+        headerShown: true
       }}>
-        <Stack.Screen name="SignupPage" component={SignupPage} />
-        <Stack.Screen name="LoginPage" component={LoginPage} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen name="Sign Up" component={SignupPage} />
+        <Stack.Screen name="Log In" component={LoginPage} />
+        <Stack.Screen name="Forgot Password" component={ForgotPassword} />
+        <Stack.Screen name="Home" component={HomePage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

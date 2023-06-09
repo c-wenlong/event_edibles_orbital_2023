@@ -9,43 +9,35 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
 
-
-
 const LoginPage = ({ navigation }) => {
     // Firebase Authentication
     const auth = getAuth();
-
-    // handle state of the use input
+    // Variable States
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
-
+    // Handle Login logic
     const handleLogin = async () => {
-        // Handle Login logic
         try {
             await signInWithEmailAndPassword(auth, email, password);
             const user = auth.currentUser;
-            console.log('Logged in with:', user.email);
+            //console.log('Logged in with:', user.email);
             navigation.navigate('HomePage');
         } catch (error) {
             alert("User not found")
         }
     }
-
+    // Used to set password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-
+    // App Interface
     return (
         <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior="padding"
             >
-                <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Log in </Text>
-                </View>
                 <View style={styles.header2Container}>
                     <Text style={styles.text}>
                         Are you a ...
@@ -78,13 +70,13 @@ const LoginPage = ({ navigation }) => {
                             />
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Forgot Password')}>
                         <Text style={styles.forgotPassword}>Forgot Password?</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={handleLogin}>
                         <Text style={styles.buttonText}>Let's Go!</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignupPage')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
                         <Text style={styles.nav}>Back to Sign Up</Text>
                     </TouchableOpacity>
                 </View>
@@ -100,16 +92,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         marginTop: 0,
-    },
-    headerContainer: {
-        flex: 1,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        fontSize: 30,
-        fontFamily: 'montserrat-bold',
+
     },
     header2Container: {
         flex: 2,
@@ -121,7 +104,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     text: {
-        fontFamily: "montserrat-regular",
+        fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: "left",
         width: 300,
