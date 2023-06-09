@@ -1,39 +1,28 @@
 // Aesthetics
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
+import * as SplashScreen from 'expo-splash-screen';
 // Firebase Authentication
-import {auth} from "../firebase/firebase.js";
+import { auth } from "../firebase/firebase.js";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
 
 const SignupPage = ({ navigation }) => {
-    // Load Font
-    const loadFonts = async () => {
-        await Font.loadAsync({
-            'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
-            'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
-            // Add other font styles if needed
-        });
-    };
-    useEffect(() => {
-        loadFonts();
-    }, []);
-
     // FireBase Authentication
-    const auth = getAuth(); 
-
+    const auth = getAuth();
     // UserInput States
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [cpassword, setCPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
-
+    const [showCPassword, setShowCPassword] = useState(false);
+    // Test Cases for SignUp (Authentication)
     const handleSignup = async () => {
         // Handle Signup logic
         if (username.trim() === '' || password.trim() === '') {
@@ -63,90 +52,131 @@ const SignupPage = ({ navigation }) => {
             }
         }
     }
-
-
-const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-};
-
-return (
-    <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior="padding"
-        >
-            <View style={styles.headerContainer}>
-                <Text style={styles.header}> Sign Up </Text>
-            </View>
-            <View style={styles.header2Container}>
-                <Text style={styles.text}>
-                    Are you a ...
-                </Text>
-                <MultipleChoiceSelector />
-            </View>
-            <View style={styles.bodyContainer}>
-                <Text style={styles.caption}> Full Name </Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="John Doe"
-                    value={username}
-                    onChangeText={text => setUsername(text)}
-                />
-
-                <Text style={styles.caption}> NUS Email </Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="exxxxxxx@u.nus.edu"
-                    value={email}
-                    onChangeText={text => setEmail(text)}
-                />
-
-                <Text style={styles.caption}> Password </Text>
-                <View style={styles.input}>
-                    <TextInput
-                        style={styles.incognito}
-                        placeholder="Password"
-                        secureTextEntry={!showPassword}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                    />
-                    <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
-                        <Ionicons
-                            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                            size={24}
-                            color="gray"
-                        />
-                    </TouchableOpacity>
-                </View>
-
-                <Text style={styles.caption}> Confirm Password</Text>
-                <View style={styles.input}>
-                    <TextInput
-                        style={styles.incognito}
-                        placeholder="Password"
-                        secureTextEntry={!showPassword}
-                        value={cpassword}
-                        onChangeText={text => setCPassword(text)}
-                    />
-                    <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
-                        <Ionicons
-                            name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                            size={24}
-                            color="gray"
-                        />
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.button} onPress={handleSignup}>
-                    <Text style={styles.buttonText}>Let's Go!</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
-                    <Text style={styles.nav}>Existing user? Log in</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
-    </ImageBackground>
-);
+    // Used to set password visibility
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
+    // Used to set confirmed password visibility
+    const toggleCPasswordVisibility = () => {
+        setShowCPassword(!showCPassword);
+    };
+    // Load Font Before Screen is shown
+    const [appIsReady, setAppIsReady] = useState(false);
+    useEffect(() => {
+        async function prepare() {
+            try {
+                // Pre-load fonts, make any API calls you need to do here
+                await Font.loadAsync({
+                    'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
+                    'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
+                });
+                // Artificially delay for two seconds to simulate a slow loading
+                // experience. Please remove this if you copy and paste the code!
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+            } catch (e) {
+                console.warn(e);
+            } finally {
+                // Tell the application to render
+                setAppIsReady(true);
+            }
+        }
+
+        prepare();
+    }, []);
+    const onLayoutRootView = useCallback(async () => {
+        if (appIsReady) {
+            // This tells the splash screen to hide immediately! If we call this after
+            // `setAppIsReady`, then we may see a blank screen while the app is
+            // loading its initial state and rendering its first pixels. So instead,
+            // we hide the splash screen once we know the root view has already
+            // performed layout.
+            await SplashScreen.hideAsync();
+        }
+    }, [appIsReady]);
+    if (!appIsReady) {
+        return null;
+    }
+    // App Interface
+    return (
+        <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior="padding"
+            >
+                <View style={styles.headerContainer}>
+                    <Text style={styles.header}> Sign Up </Text>
+                </View>
+                <View style={styles.header2Container}>
+                    <Text style={styles.text}>
+                        Are you a ...
+                    </Text>
+                    <MultipleChoiceSelector />
+                </View>
+                <View style={styles.bodyContainer}>
+                    <Text style={styles.caption}> Full Name </Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="John Doe"
+                        value={username}
+                        onChangeText={text => setUsername(text)}
+                    />
+
+                    <Text style={styles.caption}> NUS Email </Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="exxxxxxx@u.nus.edu"
+                        value={email}
+                        onChangeText={text => setEmail(text)}
+                    />
+
+                    <Text style={styles.caption}> Password </Text>
+                    <View style={styles.input}>
+                        <TextInput
+                            style={styles.incognito}
+                            placeholder="Password"
+                            secureTextEntry={!showPassword}
+                            value={password}
+                            onChangeText={text => setPassword(text)}
+                        />
+                        <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
+                            <Ionicons
+                                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                size={24}
+                                color="gray"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text style={styles.caption}> Confirm Password</Text>
+                    <View style={styles.input}>
+                        <TextInput
+                            style={styles.incognito}
+                            placeholder="Password"
+                            secureTextEntry={!showCPassword}
+                            value={cpassword}
+                            onChangeText={text => setCPassword(text)}
+                        />
+                        <TouchableOpacity style={styles.eyecon} onPress={toggleCPasswordVisibility}>
+                            <Ionicons
+                                name={showCPassword ? 'eye-off-outline' : 'eye-outline'}
+                                size={24}
+                                color="gray"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                        <Text style={styles.buttonText}>Let's Go!</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
+                        <Text style={styles.nav}>Existing user? Log in</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
+        </ImageBackground>
+    );
+
+};
 
 const styles = StyleSheet.create({
     container: {

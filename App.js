@@ -1,8 +1,8 @@
 // Stack Navigation
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Screens
-import SignupPage from './pages/SignupPage';
+import SignupPage from './pages/SignupPage.js';
 import LoginPage from './pages/LoginPage.js';
 import ForgotPassword from './pages/ForgotPassword.js';
 import HomePage from './pages/HomePage.js';
@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
