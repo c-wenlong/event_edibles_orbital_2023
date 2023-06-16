@@ -5,8 +5,11 @@ const HomePage = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>This is the HomePage</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("SignupPage")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Log In")}>
                 <Text>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('BuffetDetails')}>
+                <Text>More Information</Text>
             </TouchableOpacity>
         </View>
     )

@@ -44,7 +44,6 @@ const MultipleChoiceSelector = () => {
             >
                 <Text style={styles.optionButtonText}>Student</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
                 style={[
                     styles.optionButton,

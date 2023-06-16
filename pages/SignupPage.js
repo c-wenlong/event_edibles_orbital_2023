@@ -6,15 +6,16 @@ import { useFonts } from 'expo-font';
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 import * as SplashScreen from 'expo-splash-screen';
 // Firebase Authentication
-import { auth } from "../firebase/firebase.js";
+import { auth, firebase, firestore } from "../firebase/firebase.js";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
 
 const SignupPage = ({ navigation }) => {
     // FireBase Authentication
     const auth = getAuth();
+    const newData = firebase.firestore().collection('new data');
     // Variable States
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -45,18 +46,29 @@ const SignupPage = ({ navigation }) => {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 //console.log('Signed up with:', user.email);
-                navigation.navigate('HomePage');
+                navigation.navigate('Home');
                 // Handle Existing Account Fault
             } catch (ReferenceError) {
                 alert("This is an existing account, please log in.");
             }
         }
     }
+    // To Store Sign Up Data(Username)
+    const handleAddData = async () => {
+        // create fields of timestamp and name to store username data
+        const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
+        const data = {
+            name: username,
+            createdAt: timeStamp,
+        };
+        newData.add(data).catch((error) => {
+            alert(error);
+        });
+    };
     // Used to set password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
-    // Used to set confirmed password visibility
     const toggleCPasswordVisibility = () => {
         setShowCPassword(!showCPassword);
     };
@@ -99,14 +111,14 @@ const SignupPage = ({ navigation }) => {
     }
     // App Interface
     return (
-        <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
+        <ImageBackground source={require('../assets/images/whiteposter.png')} style={styles.container} imageStyle={styles.imageBackground}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView
                     style={styles.container}
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 >
-                    <View style={styles.header2Container}>
-                        <Text style={styles.text}>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerText}>
                             Are you a ...
                         </Text>
                         <MultipleChoiceSelector />
@@ -163,7 +175,10 @@ const SignupPage = ({ navigation }) => {
                                 />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                        <TouchableOpacity style={styles.button} onPress={() => {
+                            handleSignup();
+                            handleAddData();
+                        }}>
                             <Text style={styles.buttonText}>Let's Go!</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
@@ -185,7 +200,10 @@ const styles = StyleSheet.create({
         padding: 16,
         marginTop: 0,
     },
-    header2Container: {
+    imageBackground: {
+        opacity: 0.4,
+    },
+    headerContainer: {
         flex: 2,
         width: "100%",
         padding: 16,
@@ -194,7 +212,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         opacity: 0.8,
     },
-    text: {
+    headerText: {
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: "left",

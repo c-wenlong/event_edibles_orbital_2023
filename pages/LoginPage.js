@@ -3,11 +3,11 @@ import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
-import {auth} from '../firebase/firebase.js';
+import { auth, firebase } from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const LoginPage = ({ navigation }) => {
     // Firebase Authentication
@@ -22,7 +22,7 @@ const LoginPage = ({ navigation }) => {
             await signInWithEmailAndPassword(auth, email, password);
             const user = auth.currentUser;
             //console.log('Logged in with:', user.email);
-            navigation.navigate('HomePage');
+            navigation.navigate('Home');
         } catch (error) {
             alert("User not found")
         }
@@ -33,54 +33,56 @@ const LoginPage = ({ navigation }) => {
     };
     // App Interface
     return (
-        <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior="padding"
-            >
-                <View style={styles.header2Container}>
-                    <Text style={styles.text}>
-                        Are you a ...
-                    </Text>
-                    <MultipleChoiceSelector />
-                </View>
-                <View style={styles.bodyContainer}>
-                    <Text style={styles.caption}> NUS Email </Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="exxxxxxx@u.nus.edu"
-                        value={email}
-                        onChangeText={text => setEmail(text)}
-                    />
-
-                    <Text style={styles.caption}> Password </Text>
-                    <View style={styles.input}>
+        <ImageBackground source={require('../assets/images/whiteposter.png')} style={styles.container} imageStyle={styles.imageBackground}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView
+                    style={styles.container}
+                    behavior="padding"
+                >
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerText}>
+                            Are you a ...
+                        </Text>
+                        <MultipleChoiceSelector />
+                    </View>
+                    <View style={styles.bodyContainer}>
+                        <Text style={styles.caption}> NUS Email </Text>
                         <TextInput
-                            style={styles.incognito}
-                            placeholder="Password"
-                            secureTextEntry={!showPassword}
-                            value={password}
-                            onChangeText={text => setPassword(text)}
+                            style={styles.input}
+                            placeholder="exxxxxxx@u.nus.edu"
+                            value={email}
+                            onChangeText={text => setEmail(text)}
                         />
-                        <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
-                            <Ionicons
-                                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                size={24}
-                                color="gray"
+
+                        <Text style={styles.caption}> Password </Text>
+                        <View style={styles.input}>
+                            <TextInput
+                                style={styles.incognito}
+                                placeholder="Password"
+                                secureTextEntry={!showPassword}
+                                value={password}
+                                onChangeText={text => setPassword(text)}
                             />
+                            <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
+                                <Ionicons
+                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                                    size={24}
+                                    color="gray"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <TouchableOpacity onPress={() => navigation.navigate('Forgot Password')}>
+                            <Text style={styles.forgotPassword}>Forgot Password?</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                            <Text style={styles.buttonText}>Let's Go!</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
+                            <Text style={styles.nav}>Back to Sign Up</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('Forgot Password')}>
-                        <Text style={styles.forgotPassword}>Forgot Password?</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                        <Text style={styles.buttonText}>Let's Go!</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
-                        <Text style={styles.nav}>Back to Sign Up</Text>
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </ImageBackground>
     );
 };
@@ -94,7 +96,10 @@ const styles = StyleSheet.create({
         marginTop: 0,
 
     },
-    header2Container: {
+    imageBackground: {
+        opacity: 0.4,
+    },
+    headerContainer: {
         flex: 2,
         width: "100%",
         padding: 16,
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         opacity: 0.8,
     },
-    text: {
+    headerText: {
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: "left",
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
         color: "black",
         marginBottom: 20,
         textAlign: 'center',
-        marginTop:30,
+        marginTop: 30,
     },
 });
 

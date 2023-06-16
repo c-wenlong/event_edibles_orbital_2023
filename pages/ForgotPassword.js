@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 
 const ForgotPassword = ({ navigation }) => {
     // UserInput State
     const [email, setEmail] = useState('');
-
 
     const handleForgetPassword = () => {
         // Handle login logic
@@ -17,36 +16,35 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     return (
-        <ImageBackground source={require('../assets/poster.png')} style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior="padding"
-            >
-                <View style={styles.headerContainer}>
-                    <Text style={styles.header}> Forgot Password </Text>
-                </View>
-                <View style={styles.header2Container}>
-                    <Text style={styles.text}>
-                        Are you a ...
-                    </Text>
-                    <MultipleChoiceSelector />
-                </View>
-                <View style={styles.bodyContainer}>
-                    <Text style={styles.caption}> NUS Email </Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="exxxxxxx@u.nus.edu"
-                        value={email}
-                        onChangeText={text => setEmail(text)}
-                    />
-                    <TouchableOpacity style={styles.button} onPress={handleForgetPassword}>
-                        <Text style={styles.buttonText}>Retrieve Password</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
-                        <Text style={styles.nav}>Back to Log in</Text>
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+        <ImageBackground source={require('../assets/images/whiteposter.png')} style={styles.container} imageStyle={styles.imageBackground}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <KeyboardAvoidingView
+                    style={styles.container}
+                    behavior="padding"
+                >
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerText}>
+                            Are you a ...
+                        </Text>
+                        <MultipleChoiceSelector />
+                    </View>
+                    <View style={styles.bodyContainer}>
+                        <Text style={styles.caption}> NUS Email </Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="exxxxxxx@u.nus.edu"
+                            value={email}
+                            onChangeText={text => setEmail(text)}
+                        />
+                        <TouchableOpacity style={styles.button} onPress={handleForgetPassword}>
+                            <Text style={styles.buttonText}>Retrieve Password</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
+                            <Text style={styles.nav}>Back to Log in</Text>
+                        </TouchableOpacity>
+                    </View>
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
         </ImageBackground>
     )
 }
@@ -61,17 +59,10 @@ const styles = StyleSheet.create({
         padding: 16,
         marginTop: 0,
     },
+    imageBackground: {
+        opacity: 0.4,
+    },
     headerContainer: {
-        flex: 2,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    header: {
-        fontSize: 30,
-        fontFamily: 'montserrat-bold',
-    },
-    header2Container: {
         flex: 2,
         width: "100%",
         padding: 16,
@@ -79,6 +70,13 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         backgroundColor: 'transparent',
         opacity: 0.8,
+    },
+    headerText: {
+        fontFamily: "montserrat-bold",
+        fontSize: 20,
+        textAlign: "left",
+        width: 300,
+        height: 60,
     },
     text: {
         fontFamily: "montserrat-regular",
@@ -131,13 +129,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         width: "100%"
-    },
-    forgotPassword: {
-        fontSize: 14,
-        textDecorationLine: 'underline',
-        color: "black",
-        marginBottom: 20,
-        textAlign: 'right',
     },
     nav: {
         fontSize: 14,
