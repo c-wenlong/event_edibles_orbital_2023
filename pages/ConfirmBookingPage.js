@@ -3,28 +3,58 @@ import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
-import { auth } from '../firebase/firebase.js';
+import { auth, firebase } from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
-// App inteface
-const ConfirmBookingPage = ({ navigation }) => {
-    //Handles the booking for the person -- updates database
-    const handleBooking = () => {
+import { useRoute } from '@react-navigation/core';
 
+const ConfirmBookingPage = ({ navigation }) => {
+    // Firestore Database
+    const BookingsData = firebase.firestore().collection('Bookings History');
+    // Variable States
+    const [username, setusername] = useState('');
+    const [currentBuffet, setCurrentBuffet] = useState('');
+    // Initialise data from previous page
+    const route = useRoute();
+    const param = route.params;
+    useEffect(() => {
+        setCurrentBuffet(param.currentBuffet);
+    }, []);
+    console.log(currentBuffet);
+    //Handles the booking for the person -- updates database
+    const handleConfirmBooking = () => {
+        // create fields of timestamp and name to store username data
+        const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
+        const data = {
+            email: auth.currentUser.email,
+            event: {
+                name: currentBuffet.eventName,
+                location: currentBuffet.eventLocation,
+                date: currentBuffet.eventDate,
+                time: currentBuffet.eventTime,
+            },
+            createdAt: timeStamp,
+        };
+        BookingsData.add(data).catch(error => alert(error.message));
+        // code testing
+        console.log(data.event.name + ' has been successfully booked!');
     };
+    // Initialise States for the Buffet Event
+
     // App interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-            <Image source={require('../assets/images/poster.png')} style={styles.imageContainer} />
+            <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
             <View style={styles.bodyContainer}>
-                <Text style={styles.header}>This Event is Booked for</Text>
-                <Text style={styles.caption}> Name: <Text style={styles.captionBold}>The Deck</Text></Text>
-                <Text style={styles.caption}> Location: <Text style={styles.captionBold}>School of Computing </Text></Text>
-                <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>13 June 2023</Text></Text>
-                <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>15</Text></Text >
-                <TouchableOpacity style={styles.button} onPress={handleBooking}>
+                <Text style={styles.header}>This Event is Booked for {auth.currentUser.email}</Text>
+                <Text style={styles.caption}>Name: <Text style={styles.captionBold}>{currentBuffet.eventName}</Text></Text>
+                <Text style={styles.caption}>Location: <Text style={styles.captionBold}>{currentBuffet.eventLocation}</Text></Text>
+                <Text style={styles.caption}>Date: <Text style={styles.captionBold}>{currentBuffet.eventDate}</Text></Text>
+                <Text style={styles.caption}>Time: <Text style={styles.captionBold}>{currentBuffet.eventTime}</Text></Text>
+                <Text style={styles.caption}><Text style={styles.captionBold}>Note: Please Bring Your Own Container!</Text></Text>
+                <TouchableOpacity style={styles.button} onPress={handleConfirmBooking}>
                     <Text style={styles.buttonText}>Confirm Booking</Text>
                 </TouchableOpacity>
             </View >
@@ -40,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 16,
-        },
+    },
     imageBackground: {
         opacity: 0.4,
     },
@@ -58,7 +88,7 @@ const styles = StyleSheet.create({
         fontFamily: 'montserrat-bold',
         fontSize: 20,
         textAlign: 'center',
-        paddingBottom:20,
+        paddingBottom: 20,
     },
     caption: {
         fontFamily: "montserrat-regular",

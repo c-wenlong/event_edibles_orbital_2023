@@ -1,55 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import * as Font from 'expo-font';
 
-
-
-const MultipleChoiceSelector = () => {
-
-    //import monserrat font.
-    const loadFonts = async () => {
-        await Font.loadAsync({
-            'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
-            'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
-            // Add other font styles if needed
-        });
-    };
-    useEffect(() => {
-        loadFonts();
-    }, []);
-
-    // handling the button states
-    const [selectedOption, setSelectedOption] = useState([]);
-
+const MultipleChoiceSelector = ({ onSelectOptions }) => {
+    // Variable states
+    const [selectedOption, setSelectedOption] = useState('');
+    // Handling the button states
     const handleOptionPress = (option) => {
-        if (selectedOption === option) {
-          // Deselect the option
-          setSelectedOption("");
+        if (option === "Student") {
+            // Deselect the option
+            setSelectedOption("Student");
         } else {
-          // Select the option
-          setSelectedOption(option);
+            // Select the option
+            setSelectedOption("Staff");
         }
-      };
-      
-
-    // handling UI
+    };
+    // Only update the selected option once the state has changed using useEffect Hook
+    useEffect(() => {
+        // saves the selected option
+        onSelectOptions(selectedOption);
+    }, [selectedOption])
+    // App interface
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 style={[
                     styles.optionButton,
-                    selectedOption.includes('Student') && styles.selectedOptionButton,
+                    selectedOption === 'Student' && styles.selectedOptionButton,
                 ]}
-                onPress={() => handleOptionPress('Student')}
+                onPress={() => {
+                    handleOptionPress('Student');
+                }}
             >
                 <Text style={styles.optionButtonText}>Student</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={[
                     styles.optionButton,
-                    selectedOption.includes('Staff') && styles.selectedOptionButton,
+                    selectedOption === 'Staff' && styles.selectedOptionButton,
                 ]}
-                onPress={() => handleOptionPress('Staff')}
+                onPress={() => {
+                    handleOptionPress('Staff');
+                }}
             >
                 <Text style={styles.optionButtonText}>Staff</Text>
             </TouchableOpacity>
@@ -67,18 +58,18 @@ const styles = StyleSheet.create({
     optionButton: {
         paddingVertical: 15,
         borderRadius: 50,
-        backgroundColor: 'rgba(140, 20, 252,0.9)',
+        backgroundColor: 'rgba(100, 214, 255, 1)',
         marginStart: 10,
         width: 150,
     },
     selectedOptionButton: {
-        backgroundColor: 'rgba(11,206,131,0.9)',
+        backgroundColor: 'rgba(255, 179, 125, 1)',
     },
     optionButtonText: {
-        color: 'rgba(240,240,240,0.9)',
+        color: 'rgba(202, 107, 39, 0.4)',
         fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: "montserrat-regular"
+        fontFamily: "montserrat-bold"
     },
 });
 

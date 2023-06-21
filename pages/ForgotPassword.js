@@ -16,7 +16,7 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     return (
-        <ImageBackground source={require('../assets/images/whiteposter.png')} style={styles.container} imageStyle={styles.imageBackground}>
+        <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView
                     style={styles.container}

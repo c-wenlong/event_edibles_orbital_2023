@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "486314431756",
+    "firebase_url": "https://event-edibles-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "event-edibles",
+    "storage_bucket": "event-edibles.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486314431756:android:a0247c4ae12633cb1a2529",
+        "android_client_info": {
+          "package_name": "host.exp.exponent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBw6F4xF8HtLYeOCpLoUB2d6gd_zWGkeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

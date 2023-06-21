@@ -1,39 +1,118 @@
 // Aesthetics
+import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
+import * as SplashScreen from 'expo-splash-screen';
 // FireBase
-import { auth, firebase } from '../firebase/firebase.js';
+import { auth, firebase, db } from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const LoginPage = ({ navigation }) => {
     // Firebase Authentication
     const auth = getAuth();
+    // Firestore Database
+    const LoginData = firebase.firestore().collection('Login Data');
     // Variable States
+    const [accountType, setAccountType] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     // Handle Login logic
-    const handleLogin = async () => {
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            //console.log('Logged in with:', user.email);
-            navigation.navigate('Home');
-        } catch (error) {
-            alert("User not found")
+    const handleLogin = () => {
+        if (!accountType) {
+            alert("Please indicate Student/Staff")
+        } else {
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    navigation.navigate('Home');
+                    // adds Sign In info to firestore
+                    AddLogInData(userCredential);
+                    // code testing
+                    const user = auth.currentUser;
+                    console.log('Logged in with:', user.email);
+                })
+                .catch(error => alert(error.message))
         }
     }
+    // To Store Log In Data(Username)
+    const AddLogInData = (userCredential) => {
+        // get the collection users
+        const signupDataCollection = db.collection('Signup Data');
+        // Get the authenticated user
+        const user = userCredential.user;
+        // Get the user document from Firestore
+        signupDataCollection
+            .doc(user.uid)
+            .get()
+            .then((doc) => {
+                const username = doc.data().username;
+                setUsername(username)
+                return username;
+            })
+            // enter data into firestore
+            .then((username) => {
+                // retrieve timestamp
+                const timeStamp = firebase.firestore.FieldValue.serverTimestamp();  
+                let data = {
+                    accountType: accountType,
+                    username: username,
+                    email: email,
+                    createdAt: timeStamp,
+                };
+                console.log(username)
+                LoginData.doc(user.uid).set(data).catch(error => alert('login error:'+error.message));
+            })
+            .catch(error => alert('signup error: '+error.message))
+    };
     // Used to set password visibility
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+    // Callback to MultipleChoiceSelector Component
+    const handleAccountType = (type) => {
+        setAccountType(type);
+        console.log('Selected: ' + type);
+    };
+    // Load Font Before Screen is shown
+    const [appIsReady, setAppIsReady] = useState(false);
+    useEffect(() => {
+        async function prepare() {
+            try {
+                // Pre-load fonts, make any API calls you need to do here
+                await Font.loadAsync({
+                    'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
+                    'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
+                });
+            } catch (e) {
+                console.warn(e);
+            } finally {
+                // Tell the application to render
+                setAppIsReady(true);
+            }
+        }
+        prepare();
+    }, []);
+    const onLayoutRootView = useCallback(async () => {
+        if (appIsReady) {
+            // This tells the splash screen to hide immediately! If we call this after
+            // `setAppIsReady`, then we may see a blank screen while the app is
+            // loading its initial state and rendering its first pixels. So instead,
+            // we hide the splash screen once we know the root view has already
+            // performed layout.
+            await SplashScreen.hideAsync();
+        }
+    }, [appIsReady]);
+    if (!appIsReady) {
+        return null;
+    }
     // App Interface
     return (
-        <ImageBackground source={require('../assets/images/whiteposter.png')} style={styles.container} imageStyle={styles.imageBackground}>
+        <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <KeyboardAvoidingView
                     style={styles.container}
@@ -43,7 +122,7 @@ const LoginPage = ({ navigation }) => {
                         <Text style={styles.headerText}>
                             Are you a ...
                         </Text>
-                        <MultipleChoiceSelector />
+                        <MultipleChoiceSelector onSelectOptions={(type) => { handleAccountType(type) }} />
                     </View>
                     <View style={styles.bodyContainer}>
                         <Text style={styles.caption}> NUS Email </Text>
@@ -53,7 +132,6 @@ const LoginPage = ({ navigation }) => {
                             value={email}
                             onChangeText={text => setEmail(text)}
                         />
-
                         <Text style={styles.caption}> Password </Text>
                         <View style={styles.input}>
                             <TextInput
@@ -78,7 +156,7 @@ const LoginPage = ({ navigation }) => {
                             <Text style={styles.buttonText}>Let's Go!</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('Sign Up')}>
-                            <Text style={styles.nav}>Back to Sign Up</Text>
+                            <Text style={styles.nav}>Sign Up as New User</Text>
                         </TouchableOpacity>
                     </View>
                 </KeyboardAvoidingView>
@@ -97,7 +175,7 @@ const styles = StyleSheet.create({
 
     },
     imageBackground: {
-        opacity: 0.4,
+        opacity: 0.5,
     },
     headerContainer: {
         flex: 2,
@@ -133,7 +211,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         backgroundColor: "white",
         borderWidth: 3,
-        borderColor: 'rgba(140, 20, 252,0.5)',
+        borderColor: 'rgba(255, 179, 125, 0.8)',
         flexDirection: "row",
     },
     incognito: {
@@ -145,7 +223,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     button: {
-        backgroundColor: 'rgb(11,206,131)',
+        backgroundColor: 'rgba(18, 155, 32, 0.8)',
         paddingVertical: 10,
         paddingHorizontal: 50,
         borderRadius: 10,
@@ -154,9 +232,9 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     buttonText: {
+        fontFamily: 'montserrat-bold',
         color: 'white',
         fontSize: 16,
-        fontWeight: 'bold',
         textAlign: 'center',
         width: "100%"
     },
@@ -166,8 +244,10 @@ const styles = StyleSheet.create({
         color: "black",
         marginBottom: 20,
         textAlign: 'right',
+        fontFamily: 'montserrat-regular',
     },
     nav: {
+        fontFamily: 'montserrat-regular',
         fontSize: 14,
         textDecorationLine: 'underline',
         color: "black",

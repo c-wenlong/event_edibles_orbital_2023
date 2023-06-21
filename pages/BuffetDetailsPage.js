@@ -3,27 +3,53 @@ import { Ionicons } from '@expo/vector-icons';
 // Components
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
-import { auth } from '../firebase/firebase.js';
+import { auth, firebase, db } from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
-// App inteface
 const BuffetDetailsPage = ({ navigation }) => {
+    // Variable States
+    const [username, setusername] = useState('');
+    // stores the array of all buffets
+    const [buffetList, setBuffetList] = useState('')
+    // Initialise States for the Buffet Event
+    const handleBooking = () => {
+        navigation.navigate('Confirm Booking', { currentBuffet: buffetList })
+    }
+    // Import Database from Firestore
+    useEffect(() => {
+        db.collection('Buffet Events')
+            .get()
+            .then(results => results.docs)
+            .then(docs => docs.map(doc => ({
+                id: doc.id,
+                eventName: doc.data().eventName,
+                eventLocation: doc.data().eventLocation,
+                eventDate: doc.data().eventDate,
+                eventTime: doc.data().eventTime,
+                organiserName: doc.data().organiserName,
+            })))
+            .then(data => {
+                setBuffetList(data[0])
+                //code testing
+                console.log("Loaded Buffet: " + buffetList.eventName);
+            })
+            .catch(error => alert(error.message))
+    }, [])
+    console.log(buffetList)
+    // App Interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-            <Image source={require('../assets/images/poster.png')} style={styles.imageContainer} />
+            <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
             <View style={styles.bodyContainer}>
-                <Text style={styles.caption}> Name: <Text style={styles.captionBold}>Welfare Dinner for Staff @CLB</Text></Text>
-                <Text style={styles.caption}> Location: <Text style={styles.captionBold}>Central Library </Text></Text>
-                <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>13 June 2023 1400Hrs</Text></Text>
-                <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>15</Text></Text >
-                <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>NUSSU</Text></Text >
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ConfirmBooking')}>
+                <Text style={styles.caption}> Event Name: <Text style={styles.captionBold}>{buffetList.eventName}</Text></Text>
+                <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetList.eventLocation} </Text></Text>
+                <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>{buffetList.eventDate}</Text></Text>
+                <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>{buffetList.eventTime}</Text></Text >
+                <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetList.organiserName}</Text></Text >
+                <TouchableOpacity style={styles.button} onPress={handleBooking}>
                     <Text style={styles.buttonText}>Add to Booking</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-                    <Text style={styles.nav}>Back to HomePage</Text>
                 </TouchableOpacity>
             </View >
         </ImageBackground >
