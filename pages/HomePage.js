@@ -4,19 +4,19 @@ import { auth, db, firebase } from "../firebase/firebase"
 import { signOut } from '@firebase/auth'
 const HomePage = ({ navigation }) => {
     // Variable States
-    const [username, setUsername] = useState('');
-    // Initiase States on page
+    const [userProfile, setUserProfile] = useState('');
+    // Initiase user profile on page
     useEffect(() => {
         // get the collection users
-        const signupDataCollection = db.collection('Signup Data');
+        const SignupData = db.collection('Signup Data');
         // Get the authenticated user
         const userId = firebase.auth().currentUser.uid;
         // Get the user document from Firestore
-        signupDataCollection
+        SignupData
             .doc(userId)
             .get()
             .then((doc) => {
-                setUsername(doc.data().username);
+                setUserProfile(doc.data());
             })
     }, [])
     // Handles Sign Out
@@ -28,17 +28,21 @@ const HomePage = ({ navigation }) => {
             })
             .catch(error => alert(error.message))
     }
+    // Handles the opening of the buffet informations
+    const handleOpenBuffet = () => {
+        navigation.navigate('BuffetDetails', { userProfile: userProfile })
+    }
     // App interface
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Logged In with {auth.currentUser?.email} as {username}</Text>
+                <Text style={styles.title}>Logged In with {userProfile?.email} as {userProfile?.username}</Text>
             </View>
             <View style={styles.body}>
                 <TouchableOpacity style={styles.button} onPress={handleSignOut}>
                     <Text style={styles.buttonText}>Sign Out</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BuffetDetails')}>
+                <TouchableOpacity style={styles.button} onPress={handleOpenBuffet}>
                     <Text style={styles.buttonText}>More Information</Text>
                 </TouchableOpacity>
             </View>

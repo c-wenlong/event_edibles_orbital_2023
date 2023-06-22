@@ -67,6 +67,7 @@ const SignupPage = ({ navigation }) => {
             accountType: accountType,
             username: username,
             email: email,
+            password: password,
             createdAt: timeStamp,
         };
         SignupData.doc(user.uid).set(data).catch(error => alert(error.message));

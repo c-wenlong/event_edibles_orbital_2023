@@ -8,22 +8,23 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
-import { useRoute } from '@react-navigation/core';
+import { useRoute } from '@react-navigation/native';
 
 const ConfirmBookingPage = ({ navigation }) => {
     // Firestore Database
     const BookingsData = firebase.firestore().collection('Bookings History');
     // Variable States
-    const [username, setusername] = useState('');
+    const [userProfile, setUserProfile] = useState('');
     const [currentBuffet, setCurrentBuffet] = useState('');
     // Initialise data from previous page
-    const route = useRoute();
-    const param = route.params;
+    const route = useRoute()
     useEffect(() => {
+        const param = route.params;
         setCurrentBuffet(param.currentBuffet);
+        setUserProfile(param.userProfile);
     }, []);
-    console.log(currentBuffet);
     //Handles the booking for the person -- updates database
+    // appends the name of user to database of buffets and appends buffet to user database
     const handleConfirmBooking = () => {
         // create fields of timestamp and name to store username data
         const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -41,14 +42,12 @@ const ConfirmBookingPage = ({ navigation }) => {
         // code testing
         console.log(data.event.name + ' has been successfully booked!');
     };
-    // Initialise States for the Buffet Event
-
     // App interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
             <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
             <View style={styles.bodyContainer}>
-                <Text style={styles.header}>This Event is Booked for {auth.currentUser.email}</Text>
+                <Text style={styles.header}>This Event is Booked for {userProfile.username}</Text>
                 <Text style={styles.caption}>Name: <Text style={styles.captionBold}>{currentBuffet.eventName}</Text></Text>
                 <Text style={styles.caption}>Location: <Text style={styles.captionBold}>{currentBuffet.eventLocation}</Text></Text>
                 <Text style={styles.caption}>Date: <Text style={styles.captionBold}>{currentBuffet.eventDate}</Text></Text>

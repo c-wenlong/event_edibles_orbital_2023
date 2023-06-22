@@ -16,15 +16,15 @@ const StackNavigator = () => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-      const auth = getAuth();
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUser(user);
-      });
-  
-      // Clean up the listener when the component unmounts
-      return () => unsubscribe();
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+        });
+
+        // Clean up the listener when the component unmounts
+        return () => unsubscribe();
     }, []);
-  
+
     return (
         <Stack.Navigator screenOptions={{
             headerShown: true

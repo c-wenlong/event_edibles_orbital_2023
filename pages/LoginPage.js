@@ -18,7 +18,6 @@ const LoginPage = ({ navigation }) => {
     const LoginData = firebase.firestore().collection('Login Data');
     // Variable States
     const [accountType, setAccountType] = useState('');
-    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -29,45 +28,48 @@ const LoginPage = ({ navigation }) => {
         } else {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    navigation.navigate('Home');
                     // adds Sign In info to firestore
-                    AddLogInData(userCredential);
+                    return AddLogInData(userCredential);
+                })
+                // waits for username
+                .then((username) => {
+                    navigation.navigate('Home');
                     // code testing
-                    const user = auth.currentUser;
-                    console.log('Logged in with:', user.email);
+                    console.log('Logged in with:', email + ' @ ' + username);
                 })
                 .catch(error => alert(error.message))
+
         }
     }
-    // To Store Log In Data(Username)
-    const AddLogInData = (userCredential) => {
-        // get the collection users
-        const signupDataCollection = db.collection('Signup Data');
-        // Get the authenticated user
-        const user = userCredential.user;
-        // Get the user document from Firestore
-        signupDataCollection
-            .doc(user.uid)
-            .get()
-            .then((doc) => {
-                const username = doc.data().username;
-                setUsername(username)
-                return username;
-            })
-            // enter data into firestore
-            .then((username) => {
-                // retrieve timestamp
-                const timeStamp = firebase.firestore.FieldValue.serverTimestamp();  
-                let data = {
-                    accountType: accountType,
-                    username: username,
-                    email: email,
-                    createdAt: timeStamp,
-                };
-                console.log(username)
-                LoginData.doc(user.uid).set(data).catch(error => alert('login error:'+error.message));
-            })
-            .catch(error => alert('signup error: '+error.message))
+    // To Store Log In Data(Username) (Firestore fetch is async, so we have
+    // to specify so that we can use the await to wait for fetching to be
+    // completed before running the 2nd then block)
+    const AddLogInData = async (userCredential) => {
+        try {
+            // Get the collection 'Signup Data'
+            const signupDataCollection = db.collection('Signup Data');
+            // Get the authenticated user
+            const user = userCredential.user;
+            // Get the user document from Firestore (waits for completion)
+            const doc = await signupDataCollection.doc(user.uid).get();
+            const username = doc.data().username;
+            // Retrieve timestamp
+            const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
+            const data = {
+                accountType: accountType,
+                username: username,
+                email: email,
+                password: password,
+                createdAt: timeStamp,
+            };
+            await LoginData.doc(user.uid).set(data);
+            // return username to control the flow of the program
+            // so that the 2nd then block in handleLogin waits for
+            // this variable before running.
+            return username;
+        } catch (error) {
+            alert(error.message);
+        }
     };
     // Used to set password visibility
     const togglePasswordVisibility = () => {

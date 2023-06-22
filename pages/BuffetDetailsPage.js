@@ -8,17 +8,27 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { useRoute } from '@react-navigation/core';
 const BuffetDetailsPage = ({ navigation }) => {
     // Variable States
-    const [username, setusername] = useState('');
+    const [userProfile, setUserProfile] = useState('');
     // stores the array of all buffets
     const [buffetList, setBuffetList] = useState('')
     // Initialise States for the Buffet Event
     const handleBooking = () => {
-        navigation.navigate('Confirm Booking', { currentBuffet: buffetList })
+        navigation.navigate('Confirm Booking', { userProfile: userProfile, currentBuffet: buffetList })
     }
-    // Import Database from Firestore
+    // Initialise State of User
+    const route = useRoute();
     useEffect(() => {
+        const param = route.params;
+        setUserProfile(param.userProfile);
+        // code testing
+        console.log(userProfile.username + ' is browsing the buffet!')
+    }, []);
+    // Import data from Firestore to fill in the page
+    useEffect(() => {
+        // Initialise State of Buffet
         db.collection('Buffet Events')
             .get()
             .then(results => results.docs)
@@ -37,7 +47,6 @@ const BuffetDetailsPage = ({ navigation }) => {
             })
             .catch(error => alert(error.message))
     }, [])
-    console.log(buffetList)
     // App Interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
