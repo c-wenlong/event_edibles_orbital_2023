@@ -1,18 +1,20 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 
-const BuffetDescription = ({ imgUrl }) => {
-    console.log('loading description')
+const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, eventTime, handleOpenBuffet }) => {
     return (
-        <TouchableOpacity>
-            <Image source={imgUrl} style={styles.image} />
-            <View style={styles.infoContainer}>
-                <Text style={styles.title}>Buffet Event</Text>
-                <Text style={styles.subtitle}>Date & Time</Text>
-                <Text style={styles.description}>July 15, 2023 | 7:00 PM</Text>
-                <Text style={styles.subtitle}>Location</Text>
-                <Text style={styles.description}>123 Main Street, City</Text>
+        <TouchableOpacity style={styles.container} onPress={handleOpenBuffet}>
+            <Image
+                source={require('../assets/images/buffet1.jpg')}
+                style={styles.image}
+            />
+            {/* description */}
+            <View style={styles.titleContainer}>
+                <Text style={styles.title}>{eventName}</Text>
+                <View style={styles.descriptionContainer}>
+                    <Text style={styles.description}>{eventLocation}</Text>
+                    <Text style={styles.description}>{eventDate} • {eventTime}</Text>
+                </View>
             </View>
         </TouchableOpacity>
     )
@@ -22,39 +24,33 @@ export default BuffetDescription
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        padding: 20,
-        margin: 10,
-        borderColor: 'red',
-        borderWidth: 2,
-        borderRadius: 30,
-        flexDirection: 'row'
+        backgroundColor: 'white',
+        marginRight: 10,
+        height: 200,
+        width: '140%',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
     },
     image: {
-        width: '80%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    infoContainer: {
         width: '100%',
-        paddingHorizontal: 16,
-        marginTop: 16,
-        marginRight: 40,
+        height: '60%',
+        borderRadius: 5,
+    },
+    titleContainer: {
+        paddingHorizontal: 3,
+        paddingBottom: 4,
+        marginTop: 2,
     },
     title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 8,
+        fontFamily: 'montserrat-bold',
+        fontSize: 16,
+        paddingTop: 2,
     },
-    subtitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 4,
+    descriptionContainer: {
+        marginTop: 4,
     },
     description: {
-        fontSize: 10,
-    },
+        fontFamily: 'montserrat-regular',
+        fontSize: 12,
+    }
 });

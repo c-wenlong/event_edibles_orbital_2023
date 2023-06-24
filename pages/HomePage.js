@@ -1,12 +1,13 @@
 // REACT-NATIVE COMPONENTS
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
+// Use after hiding top bar
+import { SafeAreaView } from 'react-native-safe-area-context'
 // FIREBASE OBJECTS
 import { auth, db, firebase } from "../firebase/firebase"
 import { signOut } from '@firebase/auth'
 // CUSTOM COMPONENTS IN BODY
 import BuffetDescriptionByLocation from '../components/BuffetDescriptionByLocation'
-import BuffetDescription from '../components/BuffetDescription'
 
 const HomePage = ({ navigation }) => {
     // Variable States
@@ -27,11 +28,11 @@ const HomePage = ({ navigation }) => {
                 });
             })
         db.collection('Buffet Events')
-        .doc()
-        .get()
-        .then(doc => {
-            setBuffetList(doc);
-        })
+            .doc()
+            .get()
+            .then(doc => {
+                setBuffetList(doc);
+            })
     }, [])
     // Handles Sign Out
     const handleSignOut = () => {
@@ -55,16 +56,56 @@ const HomePage = ({ navigation }) => {
                 {/* header */}
                 <View style={styles.header}>
                     <Text style={styles.title}>Logged In with {userProfile?.data.email} as {userProfile?.data.username}</Text>
-                </View>
-                {/* body */}
-                <BuffetDescriptionByLocation />
-                {/*<BuffetDescription/>*/}
-                <View style={{ flex: 1 }}>
                     <TouchableOpacity style={styles.button} onPress={handleSignOut}>
                         <Text style={styles.buttonText}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+                {/* body */}
+                <ScrollView style={styles.body}>
+                    {/* Filtered by Location */}
+                    <BuffetDescriptionByLocation
+                        id='SOC'
+                        location="School of Computing"
+                        eventName='Welfare Lunch @ SOC'
+                        eventLocation='SOC'
+                        eventDate='21 June'
+                        eventTime='1400'
+                        handleOpenBuffet={handleOpenBuffet}
+                    />
+                    <BuffetDescriptionByLocation
+                        id='FASS'
+                        location="Faculty of Arts & Social Sciences"
+                        eventName='Welfare Lunch @ FASS'
+                        eventLocation='FASS'
+                        eventDate='22 June'
+                        eventTime='1430'
+                    />
+                    <BuffetDescriptionByLocation
+                        id='FOS'
+                        location="Faculty of Science"
+                        eventName='Welfare Lunch @ FOS'
+                        eventLocation='FOS'
+                        eventDate='23 June'
+                        eventTime='1450'
+                    />
+                    <BuffetDescriptionByLocation
+                        id='BIZ'
+                        location="School of Business"
+                        eventName='Welfare Lunch @ BIZ'
+                        eventLocation='FOS'
+                        eventDate='22 June'
+                        eventTime='1430'
+                    />
+                    <BuffetDescriptionByLocation
+                        id='CDE'
+                        location="College of Design & Engineering"
+                        eventName='Welfare Lunch @ CDE'
+                        eventLocation='CDE'
+                        eventDate='29 June'
+                        eventTime='1600'
+                    />
+                </ScrollView>
+            </View >
         )
     }
 }
@@ -74,34 +115,33 @@ export default HomePage;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     header: {
-        flex: 1,
-        justifyContent: 'flex-start',
+        flex: 0.1,
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:'white',
     },
     title: {
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: 'center',
     },
-    body: {
-        flex: 6,
-        width: '100%',
-        height: '200%'
-    },
     button: {
-        padding: 16,
         backgroundColor: "blue",
         borderRadius: 20,
-        marginBottom: 20,
+        width:200,
     },
     buttonText: {
         textAlign: 'center',
         fontFamily: 'montserrat-bold',
         fontSize: 16,
         color: "white",
+    },
+    body: {
+        flex: 1,
+        width: '100%',
+        height: '200%',
     },
     buffetDescriptionContainer: {
         flex: 1,

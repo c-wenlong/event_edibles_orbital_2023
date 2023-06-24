@@ -49,8 +49,8 @@ const BuffetDetailsPage = ({ navigation }) => {
                 <View style={styles.bodyContainer}>
                     <Text style={styles.caption}> Event Name: <Text style={styles.captionBold}>{buffetProfile.data.eventName}</Text></Text>
                     <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetProfile.data.eventLocation} </Text></Text>
-                    <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>{buffetProfile.data.eventDate}</Text></Text>
-                    <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>{buffetProfile.data.eventTime}</Text></Text >
+                    <Text style={styles.caption}> Date: <Text style={styles.captionBold}>{buffetProfile.data.eventDate}</Text></Text>
+                    <Text style={styles.caption}> Time: <Text style={styles.captionBold}>{buffetProfile.data.eventTime}</Text></Text >
                     <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetProfile.data.organiserName}</Text></Text >
                     <TouchableOpacity style={styles.button} onPress={handleBooking}>
                         <Text style={styles.buttonText}>Add to Booking</Text>

@@ -1,13 +1,11 @@
 // Aesthetics
 import { Ionicons } from '@expo/vector-icons';
-// Components
-import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
-import { auth, firebase } from '../firebase/firebase.js';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, firebase, db } from '../firebase/firebase.js';
+import { arrayUnion } from 'firebase/firestore'
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 const ConfirmBookingPage = ({ navigation }) => {
@@ -25,15 +23,22 @@ const ConfirmBookingPage = ({ navigation }) => {
     // appends the name of user to database of buffets and appends buffet to user database
     const handleConfirmBooking = () => {
         // Firestore Database
-        const BookingsData = firebase.firestore().collection('Bookings History');
         const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
         const data = {
             user: userProfile,
             buffetProfile: buffetProfile,
             createdAt: timeStamp,
         };
-        BookingsData.add(data).catch(error => alert(error.message));
-        // NEED TO APPEND BUFFET TO USER AND USER TO BUFFET
+        // Appends userProfile to Buffet Details
+        db.collection('Buffet Events')
+            .doc(buffetProfile.id)
+            .update({ userAdded: arrayUnion(userProfile.id) })
+            .catch(error => alert(error.message));
+        // Appends buffetProfile to Users
+        db.collection("Users")
+            .doc(userProfile.id)
+            .update({ buffetAdded: arrayUnion(buffetProfile.id) })
+            .catch(error => alert(error.message))
         // code testing
         console.log(data.buffetProfile.data.eventName + ' has been successfully booked!');
     };
