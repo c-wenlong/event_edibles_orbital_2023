@@ -7,58 +7,57 @@ import { auth, firebase } from '../firebase/firebase.js';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 const ConfirmBookingPage = ({ navigation }) => {
-    // Firestore Database
-    const BookingsData = firebase.firestore().collection('Bookings History');
     // Variable States
     const [userProfile, setUserProfile] = useState('');
-    const [currentBuffet, setCurrentBuffet] = useState('');
-    // Initialise data from previous page
+    const [buffetProfile, setBuffetProfile] = useState('');
+    // INITIALISE USER AND BUFFET DATA
     const route = useRoute()
     useEffect(() => {
         const param = route.params;
-        setCurrentBuffet(param.currentBuffet);
+        setBuffetProfile(param.buffetProfile);
         setUserProfile(param.userProfile);
     }, []);
     //Handles the booking for the person -- updates database
     // appends the name of user to database of buffets and appends buffet to user database
     const handleConfirmBooking = () => {
-        // create fields of timestamp and name to store username data
+        // Firestore Database
+        const BookingsData = firebase.firestore().collection('Bookings History');
         const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
         const data = {
-            email: auth.currentUser.email,
-            event: {
-                name: currentBuffet.eventName,
-                location: currentBuffet.eventLocation,
-                date: currentBuffet.eventDate,
-                time: currentBuffet.eventTime,
-            },
+            user: userProfile,
+            buffetProfile: buffetProfile,
             createdAt: timeStamp,
         };
         BookingsData.add(data).catch(error => alert(error.message));
+        // NEED TO APPEND BUFFET TO USER AND USER TO BUFFET
         // code testing
-        console.log(data.event.name + ' has been successfully booked!');
+        console.log(data.buffetProfile.data.eventName + ' has been successfully booked!');
     };
     // App interface
-    return (
-        <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-            <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
-            <View style={styles.bodyContainer}>
-                <Text style={styles.header}>This Event is Booked for {userProfile.username}</Text>
-                <Text style={styles.caption}>Name: <Text style={styles.captionBold}>{currentBuffet.eventName}</Text></Text>
-                <Text style={styles.caption}>Location: <Text style={styles.captionBold}>{currentBuffet.eventLocation}</Text></Text>
-                <Text style={styles.caption}>Date: <Text style={styles.captionBold}>{currentBuffet.eventDate}</Text></Text>
-                <Text style={styles.caption}>Time: <Text style={styles.captionBold}>{currentBuffet.eventTime}</Text></Text>
-                <Text style={styles.caption}><Text style={styles.captionBold}>Note: Please Bring Your Own Container!</Text></Text>
-                <TouchableOpacity style={styles.button} onPress={handleConfirmBooking}>
-                    <Text style={styles.buttonText}>Confirm Booking</Text>
-                </TouchableOpacity>
-            </View >
-        </ImageBackground >
-    )
+    if (!userProfile || !buffetProfile) {
+        return <ActivityIndicator />
+    } else {
+        return (
+            <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
+                <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
+                <View style={styles.bodyContainer}>
+                    <Text style={styles.header}>This Event is Booked for {userProfile?.data.username}</Text>
+                    <Text style={styles.caption}>Name: <Text style={styles.captionBold}>{buffetProfile?.data.eventName}</Text></Text>
+                    <Text style={styles.caption}>Location: <Text style={styles.captionBold}>{buffetProfile?.data.eventLocation}</Text></Text>
+                    <Text style={styles.caption}>Date: <Text style={styles.captionBold}>{buffetProfile?.data.eventDate}</Text></Text>
+                    <Text style={styles.caption}>Time: <Text style={styles.captionBold}>{buffetProfile?.data.eventTime}</Text></Text>
+                    <Text style={styles.caption}><Text style={styles.captionBold}>Note: Please Bring Your Own Container!</Text></Text>
+                    <TouchableOpacity style={styles.button} onPress={handleConfirmBooking}>
+                        <Text style={styles.buttonText}>Confirm Booking</Text>
+                    </TouchableOpacity>
+                </View >
+            </ImageBackground >
+        )
+    }
 }
 
 export default ConfirmBookingPage

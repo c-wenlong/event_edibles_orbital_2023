@@ -1,70 +1,65 @@
 // Aesthetics
 import { Ionicons } from '@expo/vector-icons';
-// Components
-import MultipleChoiceSelector from '../components/SelectorButtons.js';
 // FireBase
 import { auth, firebase, db } from '../firebase/firebase.js';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 const BuffetDetailsPage = ({ navigation }) => {
     // Variable States
-    const [userProfile, setUserProfile] = useState('');
-    // stores the array of all buffets
-    const [buffetList, setBuffetList] = useState('')
-    // Initialise States for the Buffet Event
-    const handleBooking = () => {
-        navigation.navigate('Confirm Booking', { userProfile: userProfile, currentBuffet: buffetList })
-    }
-    // Initialise State of User
+    const [userProfile, setUserProfile] = useState(null);
+    const [buffetProfile, setBuffetProfile] = useState(null)
+    // INITIALISE USERDATA & BUFFETDATA
     const route = useRoute();
+    const param = route.params;
     useEffect(() => {
-        const param = route.params;
+        // userProfile is imported from Homepage
         setUserProfile(param.userProfile);
-        // code testing
-        console.log(userProfile.username + ' is browsing the buffet!')
-    }, []);
-    // Import data from Firestore to fill in the page
-    useEffect(() => {
-        // Initialise State of Buffet
-        db.collection('Buffet Events')
-            .get()
-            .then(results => results.docs)
-            .then(docs => docs.map(doc => ({
-                id: doc.id,
-                eventName: doc.data().eventName,
-                eventLocation: doc.data().eventLocation,
-                eventDate: doc.data().eventDate,
-                eventTime: doc.data().eventTime,
-                organiserName: doc.data().organiserName,
-            })))
-            .then(data => {
-                setBuffetList(data[0])
-                //code testing
-                console.log("Loaded Buffet: " + buffetList.eventName);
-            })
-            .catch(error => alert(error.message))
     }, [])
+    useEffect(() => {
+        try {
+            // buffetProfile is imported from Homepage
+            const thisBuffet = param.buffetProfile;
+            db.collection('Buffet Events')
+                .doc(thisBuffet)
+                .get()
+                .then((doc) => {
+                    const data = {
+                        id: doc.id,
+                        data: doc.data(),
+                    }
+                    setBuffetProfile(data)
+                })
+        } catch (error) {
+            console.log(error.message);
+        }
+    }, []);
+    // Handles Bookings
+    const handleBooking = () => {
+        navigation.navigate('Confirm Booking', { userProfile: userProfile, buffetProfile: buffetProfile })
+    }
     // App Interface
-    return (
-        <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-            <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
-            <View style={styles.bodyContainer}>
-                <Text style={styles.caption}> Event Name: <Text style={styles.captionBold}>{buffetList.eventName}</Text></Text>
-                <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetList.eventLocation} </Text></Text>
-                <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>{buffetList.eventDate}</Text></Text>
-                <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>{buffetList.eventTime}</Text></Text >
-                <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetList.organiserName}</Text></Text >
-                <TouchableOpacity style={styles.button} onPress={handleBooking}>
-                    <Text style={styles.buttonText}>Add to Booking</Text>
-                </TouchableOpacity>
-            </View >
-        </ImageBackground >
-    )
+    if (!userProfile || !buffetProfile) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+    } else {
+        return (
+            <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
+                <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
+                <View style={styles.bodyContainer}>
+                    <Text style={styles.caption}> Event Name: <Text style={styles.captionBold}>{buffetProfile.data.eventName}</Text></Text>
+                    <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetProfile.data.eventLocation} </Text></Text>
+                    <Text style={styles.caption}> Date & Time: <Text style={styles.captionBold}>{buffetProfile.data.eventDate}</Text></Text>
+                    <Text style={styles.caption}> No. of People Already Booked: <Text style={styles.captionBold}>{buffetProfile.data.eventTime}</Text></Text >
+                    <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetProfile.data.organiserName}</Text></Text >
+                    <TouchableOpacity style={styles.button} onPress={handleBooking}>
+                        <Text style={styles.buttonText}>Add to Booking</Text>
+                    </TouchableOpacity>
+                </View >
+            </ImageBackground >
+        )
+    }
 }
-
 export default BuffetDetailsPage
 
 const styles = StyleSheet.create({
@@ -73,7 +68,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
-        marginTop: 0,
     },
     imageBackground: {
         opacity: 0.4,

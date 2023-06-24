@@ -24,4 +24,32 @@ const auth = firebase.auth();
 // Get the firestore database obj
 const db = firebase.firestore();
 
-export {firebase, auth, db};
+// Retrieve the list of users and their personal information
+const getUserData = () => {
+  return db.collection('Signup Data')
+    .get()
+    .then(results => results.docs)
+    .then(docs => docs.map(doc => ({
+      id: doc.id,
+      accountType: doc.data().accountType,
+      username: doc.data().username,
+      email: doc.data().email,
+      // password: doc.data().password,
+    })))}
+
+// Retrieve the list of buffets from database
+const getBuffetData = () => {
+  return db.collection('Buffet Events')
+    .get()
+    .then(results => results.docs)
+    .then(docs => docs.map(doc => ({
+      id: doc.id,
+      eventName: doc.data().eventName,
+      eventLocation: doc.data().eventLocation,
+      eventDate: doc.data().eventDate,
+      eventTime: doc.data().eventTime,
+      organiserName: doc.data().organiserName,
+    })))
+  }
+
+export { firebase, auth, db, getUserData, getBuffetData};

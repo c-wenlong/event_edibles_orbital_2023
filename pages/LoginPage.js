@@ -1,22 +1,20 @@
-// Aesthetics
+// FONT
 import * as Font from 'expo-font';
+// HIDE/SHOW PASSWORD ICON
 import { Ionicons } from '@expo/vector-icons';
-// Components
+// COMPONENT IN HEADER
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
+// SPLASHSCREEN FOR FONTS TO LOAD
 import * as SplashScreen from 'expo-splash-screen';
-// FireBase
+// FIREBASE OBJECTS
 import { auth, firebase, db } from '../firebase/firebase.js';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-// React-Native Logic
+import { signInWithEmailAndPassword } from 'firebase/auth';
+// REACT-NATIVE COMPONENTS
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const LoginPage = ({ navigation }) => {
-    // Firebase Authentication
-    const auth = getAuth();
-    // Firestore Database
-    const LoginData = firebase.firestore().collection('Login Data');
-    // Variable States
+    // States
     const [accountType, setAccountType] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,7 +26,8 @@ const LoginPage = ({ navigation }) => {
         } else {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // adds Sign In info to firestore
+                    // adds Sign In info to firestore (Firestore fetch is async, so we have
+                    // to specify await to wait for fetching to be completed before running the 2nd then block)
                     return AddLogInData(userCredential);
                 })
                 // waits for username
@@ -41,35 +40,23 @@ const LoginPage = ({ navigation }) => {
 
         }
     }
-    // To Store Log In Data(Username) (Firestore fetch is async, so we have
-    // to specify so that we can use the await to wait for fetching to be
-    // completed before running the 2nd then block)
-    const AddLogInData = async (userCredential) => {
-        try {
-            // Get the collection 'Signup Data'
-            const signupDataCollection = db.collection('Signup Data');
-            // Get the authenticated user
-            const user = userCredential.user;
-            // Get the user document from Firestore (waits for completion)
-            const doc = await signupDataCollection.doc(user.uid).get();
-            const username = doc.data().username;
-            // Retrieve timestamp
-            const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
-            const data = {
-                accountType: accountType,
-                username: username,
-                email: email,
-                password: password,
-                createdAt: timeStamp,
-            };
-            await LoginData.doc(user.uid).set(data);
-            // return username to control the flow of the program
-            // so that the 2nd then block in handleLogin waits for
-            // this variable before running.
-            return username;
-        } catch (error) {
-            alert(error.message);
-        }
+    // To Store Log In Data(Username) 
+    const AddLogInData = (userCredential) => {
+        // Get ID of the current user for doc finding
+        const user = userCredential.user;
+        // Update lastLogin time
+        const timeStamp = firebase.firestore.FieldValue.serverTimestamp();
+        db.collection('Users').doc(user.uid).update({ lastLogin: timeStamp })
+        // return username to control the flow of the program
+        // so that the 2nd then block in handleLogin waits for
+        // this variable before running.
+        return db.collection('Users')
+            .doc(user.uid)
+            .get()
+            .then(doc => {
+                return doc.data().username;
+            })
+            .catch(error => alert(error.message));
     };
     // Used to set password visibility
     const togglePasswordVisibility = () => {
@@ -80,7 +67,7 @@ const LoginPage = ({ navigation }) => {
         setAccountType(type);
         console.log('Selected: ' + type);
     };
-    // Load Font Before Screen is shown
+    // LOAD FONTS
     const [appIsReady, setAppIsReady] = useState(false);
     useEffect(() => {
         async function prepare() {
@@ -99,7 +86,7 @@ const LoginPage = ({ navigation }) => {
         }
         prepare();
     }, []);
-    const onLayoutRootView = useCallback(async () => {
+    useCallback(async () => {
         if (appIsReady) {
             // This tells the splash screen to hide immediately! If we call this after
             // `setAppIsReady`, then we may see a blank screen while the app is
@@ -120,12 +107,14 @@ const LoginPage = ({ navigation }) => {
                     style={styles.container}
                     behavior="padding"
                 >
+                    {/* header */}
                     <View style={styles.headerContainer}>
                         <Text style={styles.headerText}>
                             Are you a ...
                         </Text>
                         <MultipleChoiceSelector onSelectOptions={(type) => { handleAccountType(type) }} />
                     </View>
+                    {/* body */}
                     <View style={styles.bodyContainer}>
                         <Text style={styles.caption}> NUS Email </Text>
                         <TextInput

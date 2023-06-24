@@ -1,23 +1,18 @@
-// Aesthetics
+// HIDE/SHOW PASSWORD ICON
 import { Ionicons } from '@expo/vector-icons';
-// Components
+// COMPONENT IN HEADER
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
-import * as SplashScreen from 'expo-splash-screen';
-// Firebase Authentication
-import { auth, firebase, firestore } from "../firebase/firebase.js";
+// FIREBASE OBJECTS
+import { auth, db, firebase, firestore } from "../firebase/firebase.js";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-// React-Native Logic
-import React, { useState, useEffect, useCallback } from 'react';
+// REACT-NATIVE COMPONENTS
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
+// CUSTOM HOOKS
 import useAuth from '../hooks/useAuth.js';
 
 const SignupPage = ({ navigation }) => {
-    //const { user } = useAuth();
-    // FireBase Authentication
-    const auth = getAuth();
-    // Firestore Database
-    const SignupData = firebase.firestore().collection('Signup Data');
-    // User Variable States
+    // States
     const [accountType, setAccountType] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -43,17 +38,17 @@ const SignupPage = ({ navigation }) => {
         } else if (password !== cpassword) {
             alert('Password should match with confirm passsword')
             // Handle no accountType
-        }else if (!accountType) {
+        } else if (!accountType) {
             alert('Please indicate Student/Staff')
             // Handle Firebase Authentication
         } else {
             createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    navigation.navigate('Home');
+                .then(userCredential => {
                     // adds Sign Up data to firestore
                     handleAddSignUpData(userCredential);
+                    navigation.navigate('Home');
                     // code testing
-                    console.log('Signed up with: ' + username + 'at ' + email);
+                    console.log('Signed up with: ' + username + ' at ' + email);
                 })
                 .catch(error => alert(error.messsage))
         }
@@ -69,8 +64,12 @@ const SignupPage = ({ navigation }) => {
             email: email,
             password: password,
             createdAt: timeStamp,
+            buffetAdded: [],
         };
-        SignupData.doc(user.uid).set(data).catch(error => alert(error.message));
+        db.collection('Users')
+            .doc(user.uid)
+            .set(data)
+            .catch(error => alert(error.message));
     };
     // Callback to MultipleChoiceSelector Component to update accountType
     const handleAccountType = (type) => {
