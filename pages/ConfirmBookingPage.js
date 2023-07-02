@@ -39,6 +39,8 @@ const ConfirmBookingPage = ({ navigation }) => {
             .doc(userProfile.id)
             .update({ buffetAdded: arrayUnion(buffetProfile.id) })
             .catch(error => alert(error.message))
+        // Navigates to nice interface
+        
         // code testing
         console.log(data.buffetProfile.data.eventName + ' has been successfully booked!');
     };

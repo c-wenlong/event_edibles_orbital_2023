@@ -1,5 +1,5 @@
 // REACT-NATIVE COMPONENTS
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 // Use after hiding top bar
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -8,6 +8,8 @@ import { auth, db, firebase } from "../firebase/firebase"
 import { signOut } from '@firebase/auth'
 // CUSTOM COMPONENTS IN BODY
 import BuffetDescriptionByLocation from '../components/BuffetDescriptionByLocation'
+// Icons
+import { UserIcon, UserCircleIcon } from 'react-native-heroicons/outline'
 
 const HomePage = ({ navigation }) => {
     // Variable States
@@ -34,30 +36,25 @@ const HomePage = ({ navigation }) => {
                 setBuffetList(doc);
             })
     }, [])
-    // Handles Sign Out
-    const handleSignOut = () => {
-        signOut(auth)
-            .then(() => {
-                navigation.navigate('Log In');
-                console.log('Signed Out of: ' + userProfile?.data.email)
-            })
-            .catch(error => alert(error.message))
-    }
     // Handles the opening of the buffet informations
     const handleOpenBuffet = () => {
         navigation.navigate('BuffetDetails', { userProfile: userProfile, buffetProfile: 'NUSBuffet' })
+    }
+    // Handles the opening of the userprofile page
+    const handleUserProfile = () => {
+        navigation.navigate('UserProfile', { userProfile: userProfile });
     }
     // App interface
     if (!userProfile) {
         return <ActivityIndicator />;
     } else {
         return (
-            <View style={styles.container}>
+            <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={{opacity:0.7}}>
                 {/* header */}
                 <View style={styles.header}>
-                    <Text style={styles.title}>Logged In with {userProfile?.data.email} as {userProfile?.data.username}</Text>
-                    <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-                        <Text style={styles.buttonText}>Sign Out</Text>
+                    <Text style={styles.title}>Welcome to Event Edibles!</Text>
+                    <TouchableOpacity onPress={handleUserProfile}>
+                        <UserCircleIcon size={50} style={styles.profileIcon} color='rgba(100, 214, 255, 0.7)'/>
                     </TouchableOpacity>
                 </View>
                 {/* body */}
@@ -72,7 +69,7 @@ const HomePage = ({ navigation }) => {
                         eventTime='1400'
                         handleOpenBuffet={handleOpenBuffet}
                     />
-                    <BuffetDescriptionByLocation
+                    {/*<BuffetDescriptionByLocation
                         id='FASS'
                         location="Faculty of Arts & Social Sciences"
                         eventName='Welfare Lunch @ FASS'
@@ -103,9 +100,9 @@ const HomePage = ({ navigation }) => {
                         eventLocation='CDE'
                         eventDate='29 June'
                         eventTime='1600'
-                    />
+                    />*/}
                 </ScrollView>
-            </View >
+            </ImageBackground >
         )
     }
 }
@@ -118,25 +115,18 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 0.1,
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'white',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
     },
     title: {
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: 'center',
+        marginLeft: 16,
     },
-    button: {
-        backgroundColor: "blue",
-        borderRadius: 20,
-        width:200,
-    },
-    buttonText: {
-        textAlign: 'center',
-        fontFamily: 'montserrat-bold',
-        fontSize: 16,
-        color: "white",
+    profileIcon: {
+        marginRight: 15,
     },
     body: {
         flex: 1,

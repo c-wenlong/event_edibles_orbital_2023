@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword.js';
 import HomePage from './pages/HomePage.js';
 import BuffetDetailsPage from './pages/BuffetDetailsPage.js';
 import ConfirmBookingPage from './pages/ConfirmBookingPage.js';
+import UserProfilePage from './pages/UserProfilePage.js';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
 // creates the Stack of pages
 const Stack = createNativeStackNavigator();
@@ -32,14 +33,15 @@ const StackNavigator = () => {
             {user ? (
                 <>
                     <Stack.Screen name="Home" component={HomePage} />
-                    <Stack.Screen name="Forgot Password" component={ForgotPassword} />
                     <Stack.Screen name="BuffetDetails" component={BuffetDetailsPage} />
                     <Stack.Screen name="Confirm Booking" component={ConfirmBookingPage} />
+                    <Stack.Screen name="UserProfile" component={UserProfilePage} />
                 </>
             ) : (
                 <>
                     <Stack.Screen name="Log In" component={LoginPage} />
                     <Stack.Screen name="Sign Up" component={SignupPage} />
+                    <Stack.Screen name="Forgot Password" component={ForgotPassword} />
 
                 </>
             )}

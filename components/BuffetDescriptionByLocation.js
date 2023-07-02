@@ -11,7 +11,7 @@ const BuffetDescriptionByLocation = ({ id, location, eventName, eventLocation, e
             {/* header */}
             <View style={styles.header}>
                 <Text style={styles.headerText}>{location}</Text>
-                <ArrowRightIcon color='#00CCBB' />
+                <ArrowRightIcon color='rgba(100, 214, 255, 0.7)' />
             </View>
             {/*<Text style={styles.description}>{description}</Text>*/}
             <ScrollView

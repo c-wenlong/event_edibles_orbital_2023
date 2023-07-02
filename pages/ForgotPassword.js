@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
-import MultipleChoiceSelector from '../components/SelectorButtons.js';
 
 const ForgotPassword = ({ navigation }) => {
     // UserInput State
@@ -22,12 +21,6 @@ const ForgotPassword = ({ navigation }) => {
                     style={styles.container}
                     behavior="padding"
                 >
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.headerText}>
-                            Are you a ...
-                        </Text>
-                        <MultipleChoiceSelector />
-                    </View>
                     <View style={styles.bodyContainer}>
                         <Text style={styles.caption}> NUS Email </Text>
                         <TextInput

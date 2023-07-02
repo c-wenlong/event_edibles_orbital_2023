@@ -76,6 +76,7 @@ const LoginPage = ({ navigation }) => {
                 await Font.loadAsync({
                     'montserrat-regular': require('../assets/Montserrat/static/Montserrat-Regular.ttf'),
                     'montserrat-bold': require('../assets/Montserrat/static/Montserrat-Bold.ttf'),
+                    'montserrat-extrabold': require('../assets/Montserrat/static/Montserrat-ExtraBold.ttf')
                 });
             } catch (e) {
                 console.warn(e);
