@@ -10,6 +10,10 @@ import BuffetDetailsPage from './pages/BuffetDetailsPage.js';
 import ConfirmBookingPage from './pages/ConfirmBookingPage.js';
 import UserProfilePage from './pages/UserProfilePage.js';
 import { getAuth, onAuthStateChanged } from '@firebase/auth';
+import BookingHistoryPage from './pages/BookingHistoryPage.js';
+import NotificationSettingsPage from './pages/NotificationSettingsPage.js';
+import Q_APage from './pages/Q_APage.js';
+import UploadEventsPage from './pages/UploadEventsPage.js';
 // creates the Stack of pages
 const Stack = createNativeStackNavigator();
 // Loads the homepage is signed in, else login page
@@ -34,14 +38,18 @@ const StackNavigator = () => {
                 <>
                     <Stack.Screen name="Home" component={HomePage} />
                     <Stack.Screen name="BuffetDetails" component={BuffetDetailsPage} />
-                    <Stack.Screen name="Confirm Booking" component={ConfirmBookingPage} />
+                    <Stack.Screen name="ConfirmBooking" component={ConfirmBookingPage} />
                     <Stack.Screen name="UserProfile" component={UserProfilePage} />
+                    <Stack.Screen name="BookingHistory" component={BookingHistoryPage} />
+                    <Stack.Screen name="NotificationSetting" component={NotificationSettingsPage} />
+                    <Stack.Screen name="Q&A" component={Q_APage} />
+                    <Stack.Screen name="UploadEvents" component={UploadEventsPage} />
                 </>
             ) : (
                 <>
-                    <Stack.Screen name="Log In" component={LoginPage} />
-                    <Stack.Screen name="Sign Up" component={SignupPage} />
-                    <Stack.Screen name="Forgot Password" component={ForgotPassword} />
+                    <Stack.Screen name="LogIn" component={LoginPage} />
+                    <Stack.Screen name="SignUp" component={SignupPage} />
+                    <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
 
                 </>
             )}

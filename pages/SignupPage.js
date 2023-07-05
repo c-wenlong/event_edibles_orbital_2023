@@ -150,7 +150,7 @@ const SignupPage = ({ navigation }) => {
                         <TouchableOpacity style={styles.button} onPress={handleSignup}>
                             <Text style={styles.buttonText}>Let's Go!</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
                             <Text style={styles.nav}>Existing User? Log In</Text>
                         </TouchableOpacity>
                     </View>

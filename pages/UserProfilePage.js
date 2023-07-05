@@ -8,7 +8,7 @@ import { auth, db, firebase } from '../firebase/firebase'
 const UserProfilePage = ({ navigation }) => {
     // Variable States
     const [userProfile, setUserProfile] = useState(null);
-    // INITIALISE USERDATA & BUFFETDATA
+    // INITIALISE USERDATA
     const route = useRoute();
     const param = route.params;
     useEffect(() => {
@@ -26,7 +26,7 @@ const UserProfilePage = ({ navigation }) => {
     }
     // handles opening of booking history
     const handleBookingHistory = () => {
-        console.log('Booking History To be Developed!')
+        navigation.navigate('BookingHistory', { userProfile: userProfile });
     }
     // handles opening of notif
     const handleNotificationSettings = () => {
@@ -35,6 +35,10 @@ const UserProfilePage = ({ navigation }) => {
     // handles opening of Q&A
     const handleQNA = () => {
         console.log('Q&A still under dev')
+    }
+    // handles upload page
+    const handleUploadEvent = () => {
+        navigation.navigate('UploadEvents')
     }
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={{ opacity: 0.7 }}>
@@ -68,15 +72,25 @@ const UserProfilePage = ({ navigation }) => {
                 </View>
                 <View style={styles.contentsContainer}>
                     <Text style={styles.description}>Help</Text>
-                    <TouchableOpacity style={styles.contents} onPress={handleNotificationSettings}>
+                    <TouchableOpacity style={styles.contents} onPress={handleQNA}>
                         <View style={styles.contents2}>
                             <ChatBubbleLeftRightIcon size={40} color={'rgba(100, 214, 255, 0.7)'} />
                             <Text style={styles.contentText}>Q & A</Text>
                         </View>
                         <ArrowRightIcon size={40} color={'rgba(100, 214, 255, 0.7)'} />
                     </TouchableOpacity>
+                </View><View style={styles.contentsContainer}>
+                    <Text style={styles.description}></Text>
+                    <TouchableOpacity style={styles.contents} onPress={handleUploadEvent}>
+                        <View style={styles.contents2}>
+                            <ChatBubbleLeftRightIcon size={40} color={'rgba(100, 214, 255, 0.7)'} />
+                            <Text style={styles.contentText}>Upload Events</Text>
+                        </View>
+                        <ArrowRightIcon size={40} color={'rgba(100, 214, 255, 0.7)'} />
+                    </TouchableOpacity>
                 </View>
             </View>
+
             {/* Bottom */}
             <View style={styles.bottom}>
                 <TouchableOpacity style={styles.button} onPress={handleSignOut}>
@@ -94,14 +108,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor:'white'
     },
     header: {
         flex: 2,
         alignItems: 'center',
         marginTop: 20,
         width: '100%',
-        backgroundColor: 'white',
     },
     profilePhoto: {
         justifyContent: 'center',
@@ -120,7 +132,6 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 4,
-        backgroundColor: 'rgba(200,200,200,0.1)',
         width: '100%',
     },
     contentsContainer: {

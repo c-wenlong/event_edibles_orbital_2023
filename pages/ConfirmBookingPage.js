@@ -32,12 +32,12 @@ const ConfirmBookingPage = ({ navigation }) => {
         // Appends userProfile to Buffet Details
         db.collection('Buffet Events')
             .doc(buffetProfile.id)
-            .update({ userAdded: arrayUnion(userProfile.id) })
+            .update({ userAdded: arrayUnion(userProfile) })
             .catch(error => alert(error.message));
         // Appends buffetProfile to Users
         db.collection("Users")
             .doc(userProfile.id)
-            .update({ buffetAdded: arrayUnion(buffetProfile.id) })
+            .update({ buffetAdded: arrayUnion(buffetProfile) })
             .catch(error => alert(error.message))
         // Navigates to nice interface
         

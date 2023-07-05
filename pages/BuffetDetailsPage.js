@@ -37,7 +37,7 @@ const BuffetDetailsPage = ({ navigation }) => {
     }, []);
     // Handles Bookings
     const handleBooking = () => {
-        navigation.navigate('Confirm Booking', { userProfile: userProfile, buffetProfile: buffetProfile })
+        navigation.navigate('ConfirmBooking', { userProfile: userProfile, buffetProfile: buffetProfile })
     }
     // App Interface
     if (!userProfile || !buffetProfile) {
