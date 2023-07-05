@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { auth, firebase, db } from '../firebase/firebase.js';
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 const BuffetDetailsPage = ({ navigation }) => {
     // Variable States
@@ -51,7 +51,7 @@ const BuffetDetailsPage = ({ navigation }) => {
                     <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetProfile.data.eventLocation} </Text></Text>
                     <Text style={styles.caption}> Date: <Text style={styles.captionBold}>{buffetProfile.data.eventDate}</Text></Text>
                     <Text style={styles.caption}> Time: <Text style={styles.captionBold}>{buffetProfile.data.eventTime}</Text></Text >
-                    <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetProfile.data.organiserName}</Text></Text >
+                    <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetProfile.data.organiserEmail}</Text></Text >
                     <TouchableOpacity style={styles.button} onPress={handleBooking}>
                         <Text style={styles.buttonText}>Add to Booking</Text>
                     </TouchableOpacity>

@@ -1,9 +1,9 @@
 // FONT
 import * as Font from 'expo-font';
-// HIDE/SHOW PASSWORD ICON
-import { Ionicons } from '@expo/vector-icons';
-// COMPONENT IN HEADER
+// CUSTOM COMPONENTS
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
+import QuestionAnswer from '../components/QuestionAnswer.js';
+import SecureQuestionAnswer from '../components/SecureQuestionAnswer.js'
 // SPLASHSCREEN FOR FONTS TO LOAD
 import * as SplashScreen from 'expo-splash-screen';
 // FIREBASE OBJECTS
@@ -11,14 +11,13 @@ import { auth, firebase, db } from '../firebase/firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 // REACT-NATIVE COMPONENTS
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const LoginPage = ({ navigation }) => {
     // States
     const [accountType, setAccountType] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
     // Handle Login logic
     const handleLogin = () => {
         if (!accountType) {
@@ -57,10 +56,6 @@ const LoginPage = ({ navigation }) => {
                 return doc.data().username;
             })
             .catch(error => alert(error.message));
-    };
-    // Used to set password visibility
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
     };
     // Callback to MultipleChoiceSelector Component
     const handleAccountType = (type) => {
@@ -109,38 +104,14 @@ const LoginPage = ({ navigation }) => {
                     behavior="padding"
                 >
                     {/* header */}
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.headerText}>
-                            Are you a ...
-                        </Text>
-                        <MultipleChoiceSelector onSelectOptions={(type) => { handleAccountType(type) }} />
-                    </View>
+                    <MultipleChoiceSelector caption={"Are you a . . ?"} opt1={'Student'} opt2={'Staff'} onSelectOptions={(type) => { handleAccountType(type) }} />
                     {/* body */}
                     <View style={styles.bodyContainer}>
-                        <Text style={styles.caption}> NUS Email </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="exxxxxxx@u.nus.edu"
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                        />
-                        <Text style={styles.caption}> Password </Text>
-                        <View style={styles.input}>
-                            <TextInput
-                                style={styles.incognito}
-                                placeholder="Password"
-                                secureTextEntry={!showPassword}
-                                value={password}
-                                onChangeText={text => setPassword(text)}
-                            />
-                            <TouchableOpacity style={styles.eyecon} onPress={togglePasswordVisibility}>
-                                <Ionicons
-                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={24}
-                                    color="gray"
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        {/* EMAIL */}
+                        <QuestionAnswer caption={"NUS Email"} placeholder={'exxxxxxx@u.nus.edu'} value={email} onChangeText={text => setEmail(text)} />
+                        {/* PASSWORD */}
+                        <SecureQuestionAnswer caption={"Password"} placeholder={'Password'} value={password} onChangeText={text => setPassword(text)} />
+                        {/* BOTTOM */}
                         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                             <Text style={styles.forgotPassword}>Forgot Password?</Text>
                         </TouchableOpacity>
@@ -169,50 +140,8 @@ const styles = StyleSheet.create({
     imageBackground: {
         opacity: 0.5,
     },
-    headerContainer: {
-        flex: 2,
-        width: "100%",
-        padding: 16,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        backgroundColor: 'transparent',
-        opacity: 0.8,
-    },
-    headerText: {
-        fontFamily: "montserrat-bold",
-        fontSize: 20,
-        textAlign: "left",
-        width: 300,
-        height: 60,
-    },
     bodyContainer: {
-        flex: 5,
-    },
-    caption: {
-        fontFamily: "montserrat-regular",
-        fontSize: 14,
-        textAlign: "left",
-        width: 300,
-        marginBottom: 10,
-    },
-    input: {
-        width: 300,
-        height: 50,
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 10,
-        backgroundColor: "white",
-        borderWidth: 3,
-        borderColor: 'rgba(255, 179, 125, 0.8)',
-        flexDirection: "row",
-    },
-    incognito: {
-        flex: 1,
-        paddingHorizontal: 10,
-    },
-    eyecon: {
-        paddingRight: 10,
-        marginTop: 10,
+        flex: 6,
     },
     button: {
         backgroundColor: 'rgba(18, 155, 32, 0.8)',

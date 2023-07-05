@@ -1,17 +1,17 @@
-// Aesthetics
-import { Ionicons } from '@expo/vector-icons';
 // FireBase
-import { auth, firebase, db } from '../firebase/firebase.js';
+import { firebase, db } from '../firebase/firebase.js';
 import { arrayUnion } from 'firebase/firestore'
 // React-Native Logic
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import { CheckCircleIcon } from 'react-native-heroicons/outline';
 
 const ConfirmBookingPage = ({ navigation }) => {
     // Variable States
     const [userProfile, setUserProfile] = useState('');
     const [buffetProfile, setBuffetProfile] = useState('');
+    const [bookingSuccess, setBookingSucess] = useState(false);
     // INITIALISE USER AND BUFFET DATA
     const route = useRoute()
     useEffect(() => {
@@ -40,13 +40,28 @@ const ConfirmBookingPage = ({ navigation }) => {
             .update({ buffetAdded: arrayUnion(buffetProfile) })
             .catch(error => alert(error.message))
         // Navigates to nice interface
-        
+        setBookingSucess(true);
         // code testing
         console.log(data.buffetProfile.data.eventName + ' has been successfully booked!');
     };
+    // handle back to home
+    const handleBackToHome = () => {
+        setBookingSucess(false);
+        navigation.navigate('Home');
+    }
     // App interface
     if (!userProfile || !buffetProfile) {
         return <ActivityIndicator />
+    } else if (bookingSuccess) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{ fontFamily: 'montserrat-bold', fontSize: 24, textAlign: 'center', marginBottom: 2 }}>Booking Successful! Check booking history to view update.</Text>
+                <CheckCircleIcon size={300} color={'rgba(255, 179, 125, 1)'} />
+                <TouchableOpacity style={{ backgroundColor: 'blue', padding: 14, borderRadius: 14, marginTop: 40 }} onPress={handleBackToHome}>
+                    <Text style={{ color: 'white', fontFamily: 'montserrat-bold' }}>Back</Text>
+                </TouchableOpacity>
+            </View>
+        )
     } else {
         return (
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>

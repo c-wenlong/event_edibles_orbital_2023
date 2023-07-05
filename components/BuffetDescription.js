@@ -1,7 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
-const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, eventTime, handleOpenBuffet }) => {
+const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, eventTime, userProfile }) => {
+    // Navigation
+    const navigation = useNavigation();
+    const handleOpenBuffet = () => {
+        navigation.navigate('BuffetDetails', { buffetProfile: id, userProfile: userProfile });
+    };
     return (
         <TouchableOpacity style={styles.container} onPress={handleOpenBuffet}>
             <Image
@@ -25,9 +31,8 @@ export default BuffetDescription
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
-        marginRight: 10,
         height: 200,
-        width: '140%',
+        width: '100%',
         shadowOpacity: 0.1,
         shadowRadius: 5,
     },

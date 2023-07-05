@@ -33,6 +33,7 @@ const BookingHistoryPage = () => {
                             eventLocation={buffet.data.eventLocation}
                             eventDate={buffet.data.eventDate}
                             eventTime={buffet.data.eventTime}
+                            organiserEmail={buffet.data.organiserEmail}
                             handleOpenBuffet={handleOpenBuffet}
                         />
                         )

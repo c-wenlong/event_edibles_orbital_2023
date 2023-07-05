@@ -70,7 +70,6 @@ const UploadEventsPage = () => {
         )
     } else {
         return (
-
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={{ opacity: 0.5 }}>
                 {/* Upload Questionaire */}
                 <View style={styles.questionaire}>

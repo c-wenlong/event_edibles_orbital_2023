@@ -5,7 +5,7 @@ import { ArrowRightIcon } from 'react-native-heroicons/outline'
 // CUSTOM COMPONENTS
 import BuffetDescription from './BuffetDescription'
 
-const BuffetDescriptionByLocation = ({ id, location, eventName, eventLocation, eventDate, eventTime, handleOpenBuffet }) => {
+const BuffetDescriptionByLocation = ({ location, eventName, eventLocation, eventDate, eventTime, handleOpenBuffet }) => {
     return (
         <View style={styles.container}>
             {/* header */}

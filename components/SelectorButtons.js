@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const MultipleChoiceSelector = ({ onSelectOptions }) => {
+const MultipleChoiceSelector = ({ caption, onSelectOptions }) => {
     // Variable states
     const [selectedOption, setSelectedOption] = useState('');
     // Handling the button states
@@ -22,34 +22,55 @@ const MultipleChoiceSelector = ({ onSelectOptions }) => {
     // App interface
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={[
-                    styles.optionButton,
-                    selectedOption === 'Student' && styles.selectedOptionButton,
-                ]}
-                onPress={() => {
-                    handleOptionPress('Student');
-                }}
-            >
-                <Text style={styles.optionButtonText}>Student</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[
-                    styles.optionButton,
-                    selectedOption === 'Staff' && styles.selectedOptionButton,
-                ]}
-                onPress={() => {
-                    handleOptionPress('Staff');
-                }}
-            >
-                <Text style={styles.optionButtonText}>Staff</Text>
-            </TouchableOpacity>
+            <Text style={styles.headerText}>
+                {caption}
+            </Text>
+            <View style={styles.selectorContainer}>
+                <TouchableOpacity
+                    style={[
+                        styles.optionButton,
+                        selectedOption === 'Student' && styles.selectedOptionButton,
+                    ]}
+                    onPress={() => {
+                        handleOptionPress('Student');
+                    }}
+                >
+                    <Text style={styles.optionButtonText}>Student</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.optionButton,
+                        selectedOption === 'Staff' && styles.selectedOptionButton,
+                    ]}
+                    onPress={() => {
+                        handleOptionPress('Staff');
+                    }}
+                >
+                    <Text style={styles.optionButtonText}>Staff</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
+        flex: 2,
+        width: "100%",
+        padding: 16,
+        alignItems: "center",
+        justifyContent: "flex-start",
+        backgroundColor: 'transparent',
+        opacity: 0.8,
+    },
+    headerText: {
+        fontFamily: "montserrat-bold",
+        fontSize: 24,
+        textAlign: "left",
+        width: 300,
+        height: 60,
+    },
+    selectorContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',

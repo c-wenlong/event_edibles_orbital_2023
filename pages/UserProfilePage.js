@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRoute } from '@react-navigation/core';
 import { UserCircleIcon, ArchiveBoxArrowDownIcon, ArrowRightIcon, BellIcon, ChatBubbleLeftRightIcon } from 'react-native-heroicons/outline';
 import { signOut } from 'firebase/auth';
-import { auth, db, firebase } from '../firebase/firebase'
+import { auth, } from '../firebase/firebase'
 
 const UserProfilePage = ({ navigation }) => {
     // Variable States
@@ -19,7 +19,7 @@ const UserProfilePage = ({ navigation }) => {
     const handleSignOut = () => {
         signOut(auth)
             .then(() => {
-                navigation.navigate('Log In');
+                navigation.navigate('LogIn');
                 console.log('Signed Out of: ' + userProfile?.data.email)
             })
             .catch(error => alert(error.message))

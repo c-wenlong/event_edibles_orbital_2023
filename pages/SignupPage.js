@@ -1,13 +1,13 @@
-// HIDE/SHOW PASSWORD ICON
-import { Ionicons } from '@expo/vector-icons';
-// COMPONENT IN HEADER
+// CUSTOM COMPONENTS
 import MultipleChoiceSelector from '../components/SelectorButtons.js';
+import QuestionAnswer from '../components/QuestionAnswer.js';
+import SecureQuestionAnswer from '../components/SecureQuestionAnswer.js'
 // FIREBASE OBJECTS
-import { auth, db, firebase, firestore } from "../firebase/firebase.js";
+import { auth, db, firebase } from "../firebase/firebase.js";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 // REACT-NATIVE COMPONENTS
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 // CUSTOM HOOKS
 import useAuth from '../hooks/useAuth.js';
 
@@ -77,10 +77,6 @@ const SignupPage = ({ navigation }) => {
         // app testing
         console.log('Selected: ' + type);
     };
-    // Used to set password visibility
-    const togglePasswordVisibility = (num) => {
-        num ? setShowCPassword(!showCPassword) : setShowPassword(!showPassword);
-    };
     // App Interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
@@ -89,64 +85,19 @@ const SignupPage = ({ navigation }) => {
                     style={styles.container}
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 >
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.headerText}>
-                            Are you a ...
-                        </Text>
-                        <MultipleChoiceSelector onSelectOptions={(type) => handleAccountType(type)} />
-                    </View>
+                    {/* HEADER */}
+                    <MultipleChoiceSelector caption={"Are you a . . ?"} onSelectOptions={(type) => handleAccountType(type)} />
+                    {/* BODY */}
                     <View style={styles.bodyContainer}>
-                        <Text style={styles.caption}> Full Name </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="John Doe"
-                            value={username}
-                            onChangeText={text => setUsername(text)}
-                        />
-
-                        <Text style={styles.caption}> NUS Email </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="exxxxxxx@u.nus.edu"
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                        />
-
-                        <Text style={styles.caption}> Password </Text>
-                        <View style={styles.input}>
-                            <TextInput
-                                style={styles.incognito}
-                                placeholder="Password"
-                                secureTextEntry={!showPassword}
-                                value={password}
-                                onChangeText={text => setPassword(text)}
-                            />
-                            <TouchableOpacity style={styles.eyecon} onPress={() => togglePasswordVisibility(0)}>
-                                <Ionicons
-                                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={24}
-                                    color="gray"
-                                />
-                            </TouchableOpacity>
-                        </View>
-
-                        <Text style={styles.caption}> Confirm Password</Text>
-                        <View style={styles.input}>
-                            <TextInput
-                                style={styles.incognito}
-                                placeholder="Password"
-                                secureTextEntry={!showCPassword}
-                                value={cpassword}
-                                onChangeText={text => setCPassword(text)}
-                            />
-                            <TouchableOpacity style={styles.eyecon} onPress={() => togglePasswordVisibility(1)}>
-                                <Ionicons
-                                    name={showCPassword ? 'eye-off-outline' : 'eye-outline'}
-                                    size={24}
-                                    color="gray"
-                                />
-                            </TouchableOpacity>
-                        </View>
+                        {/* FULL NAME */}
+                        <QuestionAnswer caption={"Full Name"} placeholder={'John Doe'} value={username} onChangeText={text => setUsername(text)} />
+                        {/* EMAIL */}
+                        <QuestionAnswer caption={"NUS Email"} placeholder={'exxxxxxx@u.nus.edu'} value={email} onChangeText={text => setEmail(text)} />
+                        {/* PASSWORD */}
+                        <SecureQuestionAnswer caption={"Password"} placeholder={'Password'} value={password} onChangeText={text => setPassword(text)} />
+                        {/* CONFIRM PASSWORD */}
+                        <SecureQuestionAnswer caption={"Confirm Password"} placeholder={'Confirm Password'} value={cpassword} onChangeText={text => setCPassword(text)} />
+                        {/* BOTTOM */}
                         <TouchableOpacity style={styles.button} onPress={handleSignup}>
                             <Text style={styles.buttonText}>Let's Go!</Text>
                         </TouchableOpacity>
@@ -172,50 +123,8 @@ const styles = StyleSheet.create({
     imageBackground: {
         opacity: 0.5,
     },
-    headerContainer: {
-        flex: 2,
-        width: "100%",
-        padding: 16,
-        alignItems: "center",
-        justifyContent: "flex-start",
-        backgroundColor: 'transparent',
-        opacity: 0.8,
-    },
-    headerText: {
-        fontFamily: "montserrat-bold",
-        fontSize: 20,
-        textAlign: "left",
-        width: 300,
-        height: 60,
-    },
     bodyContainer: {
-        flex: 7,
-    },
-    caption: {
-        fontFamily: "montserrat-regular",
-        fontSize: 14,
-        textAlign: "left",
-        width: 300,
-        marginBottom: 10,
-    },
-    input: {
-        width: 300,
-        height: 50,
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 10,
-        backgroundColor: "white",
-        borderWidth: 3,
-        borderColor: 'rgba(255, 179, 125, 0.8)',
-        flexDirection: "row",
-    },
-    incognito: {
-        flex: 1,
-        paddingHorizontal: 10,
-    },
-    eyecon: {
-        paddingRight: 10,
-        marginTop: 10,
+        flex: 9,
     },
     button: {
         backgroundColor: 'rgba(18, 155, 32, 0.8)',
