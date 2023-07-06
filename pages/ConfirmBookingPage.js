@@ -29,15 +29,15 @@ const ConfirmBookingPage = ({ navigation }) => {
             buffetProfile: buffetProfile,
             createdAt: timeStamp,
         };
-        // Appends userProfile to Buffet Details
+        // Appends userProfile id to Buffet Details
         db.collection('Buffet Events')
             .doc(buffetProfile.id)
-            .update({ userAdded: arrayUnion(userProfile) })
+            .update({ userAdded: arrayUnion(userProfile.id) })
             .catch(error => alert(error.message));
-        // Appends buffetProfile to Users
+        // Appends buffetProfile id to Users
         db.collection("Users")
             .doc(userProfile.id)
-            .update({ buffetAdded: arrayUnion(buffetProfile) })
+            .update({ buffetAdded: arrayUnion(buffetProfile.id) })
             .catch(error => alert(error.message))
         // Navigates to nice interface
         setBookingSucess(true);

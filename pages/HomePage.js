@@ -43,10 +43,6 @@ const HomePage = ({ navigation }) => {
             })
             .catch(error => alert(error.message))
     }, [])
-    // Handles the opening of the buffet informations
-    const handleOpenBuffet = (id) => {
-        navigation.navigate('BuffetDetails', { userProfile: userProfile, buffetProfile: id })
-    }
     // Handles the opening of the userprofile page
     const handleUserProfile = () => {
         navigation.navigate('UserProfile', { userProfile: userProfile });
