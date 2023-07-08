@@ -1,5 +1,5 @@
 // REACT-NATIVE COMPONENTS
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native'
+import { RefreshControl, ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 // FIREBASE OBJECTS
 import { auth, db } from "../firebase/firebase"
@@ -13,6 +13,7 @@ const HomePage = ({ navigation }) => {
     // Variable States
     const [userProfile, setUserProfile] = useState(null);
     const [buffetList, setBuffetList] = useState([]);
+    const [refresh, setRefresh] = useState(false);
     // INITIALISE USER && BUFFET DATA
     useEffect(() => {
         // Get userID as the document code
@@ -39,13 +40,30 @@ const HomePage = ({ navigation }) => {
                     });
                 });
                 setBuffetList(data);
-                console.log(data)
             })
             .catch(error => alert(error.message))
     }, [])
     // Handles the opening of the userprofile page
     const handleUserProfile = () => {
         navigation.navigate('UserProfile', { userProfile: userProfile });
+    };
+    // handles refresh
+    const handleRefresh = async () => {
+        try {
+            setRefresh(true);
+            // Fetch the updated buffet data from Firestore
+            const querySnapshot = await db.collection('Buffet Events').get();
+            const updatedBuffetList = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                data: doc.data(),
+            }));
+            // Update the buffetList state with the fetched data
+            setBuffetList(updatedBuffetList);
+            // Set the refreshing state to false
+            setRefresh(false);
+        } catch (error) {
+            alert(error.message)
+        }
     }
     // App interface
     if (!buffetList.length) {
@@ -61,26 +79,34 @@ const HomePage = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 {/* SCROLLVIEW */}
-                <ScrollView contentContainerStyle={styles.body}>
-                    {/* Loading Each buffet */}
-                    {buffetList.map((buffet) => {
-                        try {
-                            return (<BuffetDescription
-                                key={buffet.id}
-                                id={buffet.id}
-                                imgUrl='../assets/images/buffet1.jpg'
-                                eventName={buffet.data.eventName}
-                                eventLocation={buffet.data.eventLocation}
-                                eventDate={buffet.data.eventDate}
-                                eventTime={buffet.data.eventTime}
-                                userProfile={userProfile}
+                <View style={styles.container}>
+                    <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refresh}
+                                onRefresh={handleRefresh}
                             />
-                            )
-                        } catch (error) {
-                            alert(error.message)
-                        }
-                    })}
-                </ScrollView>
+                        }>
+                        {/* Loading Each buffet */}
+                        {buffetList.map((buffet) => {
+                            try {
+                                return (<BuffetDescription
+                                    key={buffet.id}
+                                    id={buffet.id}
+                                    imgUrl='../assets/images/buffet1.jpg'
+                                    eventName={buffet.data.eventName}
+                                    eventLocation={buffet.data.eventLocation}
+                                    eventDate={buffet.data.eventDate}
+                                    eventTime={buffet.data.eventTime}
+                                    userProfile={userProfile}
+                                />
+                                )
+                            } catch (error) {
+                                alert(error.message)
+                            }
+                        })}
+                    </ScrollView>
+                </View>
             </ImageBackground >
         )
     }
@@ -107,12 +133,7 @@ const styles = StyleSheet.create({
     profileIcon: {
         marginRight: 15,
     },
-    body: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    scrollView: {
         padding: 30,
-        width: '100%',
-        borderRadius: 10,
     },
 })
