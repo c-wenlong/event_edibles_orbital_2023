@@ -4,7 +4,7 @@ import QuestionAnswer from '../components/QuestionAnswer.js';
 import SecureQuestionAnswer from '../components/SecureQuestionAnswer.js'
 // FIREBASE OBJECTS
 import { auth, db, firebase } from "../firebase/firebase.js";
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 // REACT-NATIVE COMPONENTS
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
@@ -18,8 +18,6 @@ const SignupPage = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [cpassword, setCPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showCPassword, setShowCPassword] = useState(false);
     // Test Cases for SignUp (Authentication)
     const handleSignup = () => {
         // Handle invalid input case

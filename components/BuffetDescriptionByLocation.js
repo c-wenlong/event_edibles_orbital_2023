@@ -1,52 +1,55 @@
 // REACT-NATIVE COMPONENTS
 import { StyleSheet, Text, ScrollView, View } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+// ICONS
 import { ArrowRightIcon } from 'react-native-heroicons/outline'
 // CUSTOM COMPONENTS
 import BuffetDescription from './BuffetDescription'
 
-const BuffetDescriptionByLocation = ({ location, eventName, eventLocation, eventDate, eventTime, handleOpenBuffet }) => {
+const BuffetDescriptionByLocation = ({ filterByLocation, id, buffetProfile, userProfile }) => {
+    // STATES
+    const [buffetList, setBuffetList] = useState([]);
+    // FILTER DATA
+    useEffect(() => {
+        // filters all buffet events that have the location "School of Computing" (filterByLocation)
+        filteredBuffetList = buffetProfile.filter(buffet => {
+            return buffet.data.eventLocation == id
+        })
+        setBuffetList(filteredBuffetList);
+        console.log(buffetList)
+    }, [])
+    // App Interface
     return (
         <View style={styles.container}>
             {/* header */}
             <View style={styles.header}>
-                <Text style={styles.headerText}>{location}</Text>
-                <ArrowRightIcon color='rgba(100, 214, 255, 0.7)' />
+                <Text style={styles.headerText}>{filterByLocation}</Text>
+                <ArrowRightIcon color='rgba(100, 214, 255, 1)' />
             </View>
-            {/*<Text style={styles.description}>{description}</Text>*/}
+            {/* ScrolLView */}
             <ScrollView
                 horizontal
-                contentContainerStyle={{ paddingHorizontal: 15 }}
                 showsHorizontalScrollIndicator={false}
-                style={{ padding: 4 }}
+                style={styles.scrollView}
             >
-                <BuffetDescription
-                    id='1'
-                    imgUrl='../assets/images/buffet1.jpg'
-                    eventName={eventName}
-                    eventLocation={eventLocation}
-                    eventDate={eventDate}
-                    eventTime={eventTime}
-                    handleOpenBuffet={handleOpenBuffet}
-                />
-                {/*<BuffetDescription
-                    id='1'
-                    imgUrl='../assets/images/buffet1.jpg'
-                    eventName='welfare dinner @ SOC'
-                    eventLocation='SOC'
-                    eventDate='21 June'
-                    eventTime='1400'
-                    handleOpenBuffet={handleOpenBuffet}
-                />
-                <BuffetDescription
-                    id='1'
-                    imgUrl='../assets/images/buffet1.jpg'
-                    eventName='welfare dinner @ SOC'
-                    eventLocation='SOC'
-                    eventDate='21 June'
-                    eventTime='1400'
-                    handleOpenBuffet={handleOpenBuffet}
-                />*/}
+                {/* Loading Each buffet */}
+                {buffetList.map((buffet) => {
+                    try {
+                        return (<BuffetDescription
+                            key={buffet.id}
+                            id={buffet.id}
+                            imgUrl='../assets/images/buffet1.jpg'
+                            eventName={buffet.data.eventName}
+                            eventLocation={buffet.data.eventLocation}
+                            eventDate={buffet.data.eventDate}
+                            eventTime={buffet.data.eventTime}
+                            userProfile={userProfile}
+                        />
+                        )
+                    } catch (error) {
+                        alert(error.message)
+                    }
+                })}
             </ScrollView>
         </View>
     )
@@ -57,22 +60,19 @@ export default BuffetDescriptionByLocation
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 10
     },
     header: {
         margin: 8,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 10,
         justifyContent: 'space-between'
     },
     headerText: {
         fontFamily: 'montserrat-bold',
-        fontSize: 16,
+        fontSize: 20,
     },
-    description: {
-        fontFamily: 'montserrat-regular',
-        fontSize: '12',
-        padding: 4,
-        color: 'gray'
-    },
+    scrollView: {
+
+    }
 })

@@ -1,3 +1,4 @@
+// REACT NATIVE COMPONENTS
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     input: {
-        fontFamily:'montserrat-regular',
+        fontFamily: 'montserrat-regular',
         height: 50,
         borderRadius: 10,
         paddingLeft: 10,

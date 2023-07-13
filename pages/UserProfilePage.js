@@ -1,7 +1,11 @@
+// REACT COMPONENTS
 import { StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
+// NAVIGATION
 import { useRoute } from '@react-navigation/core';
+// ICONS
 import { UserCircleIcon, ArchiveBoxArrowDownIcon, ArrowRightIcon, BellIcon, ChatBubbleLeftRightIcon } from 'react-native-heroicons/outline';
+// FIREBASE
 import { signOut } from 'firebase/auth';
 import { auth, } from '../firebase/firebase'
 
@@ -30,11 +34,11 @@ const UserProfilePage = ({ navigation }) => {
     }
     // handles opening of notif
     const handleNotificationSettings = () => {
-        console.log('Notif setting To be Developed!')
+        navigation.navigate('NotificationSetting')
     }
     // handles opening of Q&A
     const handleQNA = () => {
-        console.log('Q&A still under dev')
+        navigation.navigate('Q&A')
     }
     // handles upload page
     const handleUploadEvent = () => {
@@ -90,7 +94,6 @@ const UserProfilePage = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
             {/* Bottom */}
             <View style={styles.bottom}>
                 <TouchableOpacity style={styles.button} onPress={handleSignOut}>

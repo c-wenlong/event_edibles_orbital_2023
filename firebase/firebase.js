@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { getAuth } from '@firebase/auth';
-import 'firebase/compat/auth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore'
+import 'firebase/compat/auth';
+import 'firebase/compat/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,6 +23,8 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 // Get the firestore database obj
 const db = firebase.firestore();
+// Get storage for image and video storage
+const storage = firebase.storage();
 
 // Retrieve the list of users and their personal information
 const getUserData = () => {
@@ -35,7 +37,8 @@ const getUserData = () => {
       username: doc.data().username,
       email: doc.data().email,
       // password: doc.data().password,
-    })))}
+    })))
+}
 
 // Retrieve the list of buffets from database
 const getBuffetData = () => {
@@ -50,6 +53,6 @@ const getBuffetData = () => {
       eventTime: doc.data().eventTime,
       organiserName: doc.data().organiserName,
     })))
-  }
+}
 
-export { firebase, auth, db, getUserData, getBuffetData};
+export { firebase, auth, db, storage, getUserData, getBuffetData };

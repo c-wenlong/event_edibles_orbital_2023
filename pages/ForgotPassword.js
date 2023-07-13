@@ -1,19 +1,21 @@
+// REACT COMPONENT
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const ForgotPassword = ({ navigation }) => {
     // UserInput State
     const [email, setEmail] = useState('');
-
+    // Handles forget password
     const handleForgetPassword = () => {
         // Handle login logic
         if (!email.endsWith("@u.nus.edu")) {
             alert("Invalid Email: email should end @u.nus.edu")
         } else {
             setEmail("");
+            // Sends an email for user to reset password
         }
     }
-
+    // App Interface
     return (
         <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -22,13 +24,9 @@ const ForgotPassword = ({ navigation }) => {
                     behavior="padding"
                 >
                     <View style={styles.bodyContainer}>
-                        <Text style={styles.caption}> NUS Email </Text>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="exxxxxxx@u.nus.edu"
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                        />
+                        {/* BODY */}
+                        <QuestionAnswer caption={"NUS Email"} placeholder={'exxxxxxx@u.nus.edu'} value={email} onChangeText={text => setEmail(text)} />
+                        {/* BOTTOM */}
                         <TouchableOpacity style={styles.button} onPress={handleForgetPassword}>
                             <Text style={styles.buttonText}>Retrieve Password</Text>
                         </TouchableOpacity>
@@ -80,32 +78,6 @@ const styles = StyleSheet.create({
     },
     bodyContainer: {
         flex: 5,
-    },
-    caption: {
-        fontFamily: "montserrat-regular",
-        fontSize: 14,
-        textAlign: "left",
-        width: 300,
-        marginBottom: 10,
-    },
-    input: {
-        width: 300,
-        height: 50,
-        borderRadius: 10,
-        marginBottom: 8,
-        paddingHorizontal: 10,
-        backgroundColor: "white",
-        borderWidth: 3,
-        borderColor: 'rgba(140, 20, 252,0.5)',
-        flexDirection: "row",
-    },
-    incognito: {
-        flex: 1,
-        paddingHorizontal: 10,
-    },
-    eyecon: {
-        paddingRight: 10,
-        marginTop: 10,
     },
     button: {
         backgroundColor: 'rgb(11,206,131)',

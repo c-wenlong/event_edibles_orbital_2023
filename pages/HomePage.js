@@ -1,19 +1,20 @@
 // REACT-NATIVE COMPONENTS
-import { RefreshControl, ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView, ImageBackground } from 'react-native'
+import { RefreshControl, ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ScrollView, ImageBackground, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 // FIREBASE OBJECTS
 import { auth, db } from "../firebase/firebase"
 // CUSTOM COMPONENTS IN BODY
 import BuffetDescription from '../components/BuffetDescription'
-import BuffetDescriptionByLocation from '../components/BuffetDescriptionByLocation'
-// Icons
-import { UserCircleIcon } from 'react-native-heroicons/outline'
+import BuffetDescriptionByLocation from '../components/BuffetDescriptionByLocation' // to be further implemented
+// ICONS
+import { UserCircleIcon, MagnifyingGlassCircleIcon } from 'react-native-heroicons/outline'
 
 const HomePage = ({ navigation }) => {
-    // Variable States
+    // STATES
     const [userProfile, setUserProfile] = useState(null);
     const [buffetList, setBuffetList] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [search, setSearch] = useState('');
     // INITIALISE USER && BUFFET DATA
     useEffect(() => {
         // Get userID as the document code
@@ -47,7 +48,7 @@ const HomePage = ({ navigation }) => {
     const handleUserProfile = () => {
         navigation.navigate('UserProfile', { userProfile: userProfile });
     };
-    // handles refresh
+    // handles page refresh
     const handleRefresh = async () => {
         try {
             setRefresh(true);
@@ -65,6 +66,16 @@ const HomePage = ({ navigation }) => {
             alert(error.message)
         }
     }
+    // List of all locations for buffets
+    const buffetLocations = [
+        { label: 'University Town', value: 'UTOWN' },
+        { label: 'School of Computing', value: 'SOC' },
+        { label: 'Faculty of Arts & Social Sciences', value: 'FASS' },
+        { label: 'Faculty of Science', value: 'FOS' },
+        { label: 'School of Business', value: 'BIZ' },
+        { label: 'College of Design & Engineering', value: 'CDE' },
+        { label: 'Yale-NUS College', value: 'YNC' },
+    ] // use this list to nested map each location to each BuffetEventsByLocation
     // App interface
     if (!buffetList.length) {
         return <ActivityIndicator />;
@@ -73,9 +84,15 @@ const HomePage = ({ navigation }) => {
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={{ opacity: 0.7 }}>
                 {/* header */}
                 <View style={styles.header}>
-                    <Text style={styles.title}>Welcome to Event Edibles!</Text>
+                    <View style={{ marginLeft: 16, padding: 10 }}>
+                        <Text style={styles.title}>Welcome to Event Edibles!</Text>
+                        <View style={styles.searchBar}>
+                            <MagnifyingGlassCircleIcon color="black" size={30} />
+                            <TextInput style={styles.search} placeholder='Search' onChange={text => setSearch(text)} />
+                        </View>
+                    </View>
                     <TouchableOpacity onPress={handleUserProfile}>
-                        <UserCircleIcon size={50} style={styles.profileIcon} color='rgba(100, 214, 255, 0.7)' />
+                        <UserCircleIcon size={60} style={styles.profileIcon} color='rgba(100, 214, 255, 1)' />
                     </TouchableOpacity>
                 </View>
                 {/* SCROLLVIEW */}
@@ -87,8 +104,12 @@ const HomePage = ({ navigation }) => {
                                 onRefresh={handleRefresh}
                             />
                         }>
+                        {buffetLocations.map(location => {
+                            return (<BuffetDescriptionByLocation filterByLocation={location.label} id={location.value} buffetProfile={buffetList} userProfile={userProfile} />)
+
+                        })}
                         {/* Loading Each buffet */}
-                        {buffetList.map((buffet) => {
+                        {/*buffetList.map((buffet) => {
                             try {
                                 return (<BuffetDescription
                                     key={buffet.id}
@@ -100,11 +121,12 @@ const HomePage = ({ navigation }) => {
                                     eventTime={buffet.data.eventTime}
                                     userProfile={userProfile}
                                 />
+
                                 )
                             } catch (error) {
                                 alert(error.message)
                             }
-                        })}
+                        })*/}
                     </ScrollView>
                 </View>
             </ImageBackground >
@@ -112,6 +134,14 @@ const HomePage = ({ navigation }) => {
     }
 }
 
+
+/* <BuffetDescriptionByLocation
+    FilterByLocation="School Of Computing"
+    key="School Of Computing"
+    id="School Of Computing"
+    buffetProfile={buffetProfile}
+    userProfile={userProfile}
+    /> */
 export default HomePage;
 
 const styles = StyleSheet.create({
@@ -119,21 +149,37 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        flex: 0.1,
-        justifyContent: 'space-between',
+        flex: 0.15,
+        justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
+        backgroundColor: 'white',
     },
     title: {
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: 'center',
-        marginLeft: 16,
+    },
+    searchBar: {
+        marginTop: 10,
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderRadius: 40,
+        borderColor: 'rgba(100, 214, 255, 1)',
+        borderWidth: 4,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    search: {
+        fontFamily: 'montserrat-bold',
+        fontSize: 14,
+        color: 'black',
+        marginLeft: 4,
     },
     profileIcon: {
         marginRight: 15,
     },
     scrollView: {
-        padding: 30,
+        padding: 20,
     },
 })

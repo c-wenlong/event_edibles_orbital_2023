@@ -1,14 +1,16 @@
-// FireBase
+// FIREBASE
 import { firebase, db } from '../firebase/firebase.js';
 import { arrayUnion } from 'firebase/firestore'
-// React-Native Logic
+// REACT NATIVE COMPONENTS
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
+// NAVIGATION
 import { useRoute } from '@react-navigation/native';
+// ICONS
 import { CheckCircleIcon } from 'react-native-heroicons/outline';
 
 const ConfirmBookingPage = ({ navigation }) => {
-    // Variable States
+    // STATES
     const [userProfile, setUserProfile] = useState('');
     const [buffetProfile, setBuffetProfile] = useState('');
     const [bookingSuccess, setBookingSucess] = useState(false);

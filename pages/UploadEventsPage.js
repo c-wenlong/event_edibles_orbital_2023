@@ -1,8 +1,9 @@
 // REACT COMPONENTS
-import { ImageBackground, StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
+import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
+import { ImagePicker } from 'react-native-image-picker';
 // FIREBASE
-import { firebase, db, auth } from '../firebase/firebase';
+import { db, auth, storage } from '../firebase/firebase';
 // ICONS
 import { ArrowDownOnSquareStackIcon } from 'react-native-heroicons/outline';
 // CUSTOM COMPONENTS
@@ -18,6 +19,7 @@ const UploadEventsPage = () => {
     const [eventTime, setEventTime] = useState('');
     const [comments, setComments] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [image, setImage] = useState(null);
     // handles updating of form info onto database
     const handleSubmitForm = () => {
         if (eventTime.trim() === '' || eventLocation.trim() === '' || eventDate.trim() === '' || eventTime.trim() === '') {
@@ -54,9 +56,34 @@ const UploadEventsPage = () => {
         { label: 'School of Business', value: 'BIZ' },
         { label: 'College of Design & Engineering', value: 'CDE' },
         { label: 'Yale-NUS College', value: 'YNC' },
-
     ]
-
+    // handles upload of images to storage
+    const handleImageUpload = async () => {
+        try {
+            // Create a unique filename for the image
+            const filename = Date.now().toString();
+            // Get the reference to the image in Firebase Storage
+            const storageRef = storage.ref().child(filename);
+            // Upload the image file to Firebase Storage
+            await storageRef.put(image);
+            // Get the download URL of the uploaded image
+            const downloadURL = await storageRef.getDownloadURL();
+            // Store the download URL in the database or use it as needed
+            // setImage(downloadURL)
+            console.log("Image uploaded successfully:", downloadURL);
+        } catch (error) {
+            console.log("Error uploading image:", error.message);
+        }
+    };
+    // handles choosing image file
+    const handleChooseImage = () => {
+        ImagePicker.showImagePicker((response) => {
+            if (!response.didCancel && !response.error) {
+                // Set the selected image file to the state variable
+                setImage(response.uri);
+            }
+        });
+    };
     // App interface
     if (isSubmitted) {
         return (
@@ -74,10 +101,14 @@ const UploadEventsPage = () => {
                 {/* Upload Questionaire */}
                 <View style={styles.questionaire}>
                     <QuestionAnswer caption={"What is the event called?"} placeholder={'Event Name'} value={eventName} onChangeText={text => setEventName(text)} />
-                    <DropDownList items={dropdownItems} onChange={text => setEventLocation(text)} caption={"Where is it held?"} placeholder={"Select Location"} value={eventLocation}  />
+                    <DropDownList items={dropdownItems} onChange={text => setEventLocation(text)} caption={"Where is it held?"} placeholder={"Select Location"} value={eventLocation} />
                     <DateTimeSelector caption={"When is it taking place?"} placeholder={"Select Date"} value={eventDate} mode={'date'} onChange={setEventDate} />
                     <DateTimeSelector caption={"What time is it taking place?"} placeholder={"Select Time"} value={eventTime} mode={'time'} onChange={setEventTime} />
                     <QuestionAnswer caption={"Additional Comments?"} placeholder={'Exact Location...'} value={comments} onChangeText={text => setComments(text)} />
+                    <TouchableOpacity style={styles.button} onPress={handleChooseImage}>
+                        <Text style={styles.buttonText}>Choose Image</Text>
+                    </TouchableOpacity>
+                    {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
                 </View>
                 {/* Submit Button */}
                 <View style={styles.bottom}>

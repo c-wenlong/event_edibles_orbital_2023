@@ -1,11 +1,11 @@
-// Aesthetics
-import { Ionicons } from '@expo/vector-icons';
-// FireBase
-import { auth, firebase, db } from '../firebase/firebase.js';
-// React-Native Logic
+// FIREBASE
+import { db } from '../firebase/firebase.js';
+// REACT NATIVE COMPONENTS
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
+// NAVIGATION
 import { useRoute } from '@react-navigation/core';
+
 const BuffetDetailsPage = ({ navigation }) => {
     // Variable States
     const [userProfile, setUserProfile] = useState(null);
@@ -35,13 +35,13 @@ const BuffetDetailsPage = ({ navigation }) => {
             console.log(error.message);
         }
     }, []);
-    // Handles Bookings
+    // Handles Confirming Bookings
     const handleBooking = () => {
         navigation.navigate('ConfirmBooking', { userProfile: userProfile, buffetProfile: buffetProfile })
     }
     // App Interface
     if (!userProfile || !buffetProfile) {
-        return <ActivityIndicator size="large" color="#0000ff" />;
+        return <ActivityIndicator />;
     } else {
         return (
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>

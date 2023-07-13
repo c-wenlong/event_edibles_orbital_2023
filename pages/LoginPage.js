@@ -1,4 +1,4 @@
-// FONT
+// CUSTOM FONT
 import * as Font from 'expo-font';
 // CUSTOM COMPONENTS
 import MultipleChoiceSelector from '../components/SelectorButtons.js';

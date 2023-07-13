@@ -1,4 +1,4 @@
-// REACT COMPONENT
+// REACT NATIVE COMPONENTS
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import React from 'react'
 

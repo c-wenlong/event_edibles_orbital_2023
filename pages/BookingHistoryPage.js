@@ -1,8 +1,11 @@
-import { ImageBackground, ScrollView, StyleSheet, RefreshControl } from 'react-native'
+// REACT NATIVE COMPONENTS
+import { ImageBackground, ScrollView, StyleSheet, RefreshControl, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
+// NAVIGATION
 import { useRoute } from '@react-navigation/native'
+// CUSTOM COMPONENTS
 import BuffetDescription from '../components/BuffetDescription'
-import { ActivityIndicator } from 'react-native'
+// FIREBASE
 import { db } from '../firebase/firebase'
 
 const BookingHistoryPage = () => {

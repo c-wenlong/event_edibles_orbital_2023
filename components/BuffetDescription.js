@@ -1,5 +1,7 @@
+// REACT NATIVE COMPONENTS
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+// NAVIGATION 
 import { useNavigation } from '@react-navigation/native'
 
 const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, eventTime, userProfile }) => {
@@ -32,9 +34,10 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         height: 200,
-        width: '100%',
+        width: 250,
         shadowOpacity: 0.1,
         shadowRadius: 5,
+        padding: 3,
     },
     image: {
         width: '100%',
