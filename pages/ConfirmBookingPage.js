@@ -60,20 +60,24 @@ const ConfirmBookingPage = ({ navigation }) => {
                 <Text style={{ fontFamily: 'montserrat-bold', fontSize: 24, textAlign: 'center', marginBottom: 2 }}>Booking Successful! Check booking history to view update.</Text>
                 <CheckCircleIcon size={300} color={'rgba(255, 179, 125, 1)'} />
                 <TouchableOpacity style={{ backgroundColor: 'blue', padding: 14, borderRadius: 14, marginTop: 40 }} onPress={handleBackToHome}>
-                    <Text style={{ color: 'white', fontFamily: 'montserrat-bold' }}>Back</Text>
+                    <Text style={{ color: 'white', fontFamily: 'montserrat-bold' }}>Back To Home</Text>
                 </TouchableOpacity>
             </View>
         )
     } else {
         return (
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-                <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
+                {buffetProfile.data.image
+                    ? <Image source={{uri:buffetProfile.data.image}} style={styles.imageContainer} />
+                    : <Image source={require('../assets/images/defaultbackground.png')} style={styles.imageContainer} />
+                }
                 <View style={styles.bodyContainer}>
                     <Text style={styles.header}>This Event is Booked for {userProfile?.data.username}</Text>
                     <Text style={styles.caption}>Name: <Text style={styles.captionBold}>{buffetProfile?.data.eventName}</Text></Text>
                     <Text style={styles.caption}>Location: <Text style={styles.captionBold}>{buffetProfile?.data.eventLocation}</Text></Text>
                     <Text style={styles.caption}>Date: <Text style={styles.captionBold}>{buffetProfile?.data.eventDate}</Text></Text>
                     <Text style={styles.caption}>Time: <Text style={styles.captionBold}>{buffetProfile?.data.eventTime}</Text></Text>
+                    <Text style={styles.caption}>Time: <Text style={styles.captionBold}>{buffetProfile?.data.comments}</Text></Text>
                     <Text style={styles.caption}><Text style={styles.captionBold}>Note: Please Bring Your Own Container!</Text></Text>
                     <TouchableOpacity style={styles.button} onPress={handleConfirmBooking}>
                         <Text style={styles.buttonText}>Confirm Booking</Text>

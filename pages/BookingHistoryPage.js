@@ -79,7 +79,7 @@ const BookingHistoryPage = () => {
                             <BuffetDescription
                                 key={buffet.id}
                                 id={buffet.id}
-                                imgUrl='../assets/images/buffet1.jpg'
+                                imgUrl={buffet.data.image}
                                 eventName={buffet?.data.eventName}
                                 eventLocation={buffet?.data.eventLocation}
                                 eventDate={buffet?.data.eventDate}
@@ -100,12 +100,12 @@ export default BookingHistoryPage
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 30
     },
     imageBackground: {
         opacity: 0.7,
     },
     scrollView: {
-        padding: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })

@@ -12,10 +12,13 @@ const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, ev
     };
     return (
         <TouchableOpacity style={styles.container} onPress={handleOpenBuffet}>
-            <Image
-                source={require('../assets/images/buffet1.jpg')}
+            {imgUrl ? <Image
+                source={{ uri: imgUrl }}
                 style={styles.image}
-            />
+            /> : <Image
+                source={require("../assets/images/defaultbackground.png")}
+                style={styles.image}
+            />}
             {/* description */}
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>{eventName}</Text>
@@ -45,17 +48,21 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     titleContainer: {
-        paddingHorizontal: 3,
-        paddingBottom: 4,
+        flex: 1,
+        padding: 8,
         marginTop: 2,
+        justifyContent: 'space-between',
+        alignItems: 'flex-start'
     },
     title: {
         fontFamily: 'montserrat-bold',
         fontSize: 16,
         paddingTop: 2,
+        color: 'rgba(255,100,10,0.7)'
     },
     descriptionContainer: {
         marginTop: 4,
+        justifyContent: 'flex-end',
     },
     description: {
         fontFamily: 'montserrat-regular',

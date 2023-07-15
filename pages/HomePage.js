@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 // FIREBASE OBJECTS
 import { auth, db } from "../firebase/firebase"
 // CUSTOM COMPONENTS IN BODY
-import BuffetDescription from '../components/BuffetDescription'
 import BuffetDescriptionByLocation from '../components/BuffetDescriptionByLocation' // to be further implemented
 // ICONS
 import { UserCircleIcon, MagnifyingGlassCircleIcon } from 'react-native-heroicons/outline'
@@ -62,10 +61,13 @@ const HomePage = ({ navigation }) => {
             setBuffetList(updatedBuffetList);
             // Set the refreshing state to false
             setRefresh(false);
+            console.log('refreshed')
         } catch (error) {
             alert(error.message)
         }
     }
+    useEffect(() => {
+    }, [buffetList])
     // List of all locations for buffets
     const buffetLocations = [
         { label: 'University Town', value: 'UTOWN' },
@@ -104,9 +106,10 @@ const HomePage = ({ navigation }) => {
                                 onRefresh={handleRefresh}
                             />
                         }>
+                        {/* Map each buffet location with its corresponding horizontal ScrollView */}
                         {buffetLocations.map(location => {
-                            return (<BuffetDescriptionByLocation filterByLocation={location.label} id={location.value} buffetProfile={buffetList} userProfile={userProfile} />)
-
+                            return (<BuffetDescriptionByLocation key={location.value} filterByLocation={location.label} id={location.value} buffetProfile={buffetList} userProfile={userProfile} />)
+                            {/* value is UTOWN, label is University Town */}
                         })}
                         {/* Loading Each buffet */}
                         {/*buffetList.map((buffet) => {
@@ -159,6 +162,7 @@ const styles = StyleSheet.create({
         fontFamily: "montserrat-bold",
         fontSize: 20,
         textAlign: 'center',
+        color: 'rgba(10,150,255,1)'
     },
     searchBar: {
         marginTop: 10,

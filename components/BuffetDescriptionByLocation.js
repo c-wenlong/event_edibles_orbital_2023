@@ -13,11 +13,13 @@ const BuffetDescriptionByLocation = ({ filterByLocation, id, buffetProfile, user
     useEffect(() => {
         // filters all buffet events that have the location "School of Computing" (filterByLocation)
         filteredBuffetList = buffetProfile.filter(buffet => {
+            if (buffet.data.eventLocation == "CDE") {
+                console.log(buffet.data.eventName)
+            }
             return buffet.data.eventLocation == id
         })
         setBuffetList(filteredBuffetList);
-        console.log(buffetList)
-    }, [])
+    }, [buffetProfile])
     // App Interface
     return (
         <View style={styles.container}>
@@ -38,7 +40,7 @@ const BuffetDescriptionByLocation = ({ filterByLocation, id, buffetProfile, user
                         return (<BuffetDescription
                             key={buffet.id}
                             id={buffet.id}
-                            imgUrl='../assets/images/buffet1.jpg'
+                            imgUrl={buffet.data.image}
                             eventName={buffet.data.eventName}
                             eventLocation={buffet.data.eventLocation}
                             eventDate={buffet.data.eventDate}
@@ -71,6 +73,7 @@ const styles = StyleSheet.create({
     headerText: {
         fontFamily: 'montserrat-bold',
         fontSize: 20,
+        color: 'rgba(255,100,10,1)'
     },
     scrollView: {
 

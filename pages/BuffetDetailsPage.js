@@ -45,13 +45,17 @@ const BuffetDetailsPage = ({ navigation }) => {
     } else {
         return (
             <ImageBackground source={require('../assets/images/posterwithoutlogo.png')} style={styles.container} imageStyle={styles.imageBackground}>
-                <Image source={require('../assets/images/buffet1.jpg')} style={styles.imageContainer} />
+                {buffetProfile.data.image
+                    ? <Image source={{ uri: buffetProfile.data.image }} style={styles.imageContainer} />
+                    : <Image source={require("../assets/images/defaultbackground.png")} style={styles.imageContainer} />
+                }
                 <View style={styles.bodyContainer}>
                     <Text style={styles.caption}> Event Name: <Text style={styles.captionBold}>{buffetProfile.data.eventName}</Text></Text>
                     <Text style={styles.caption}> Location: <Text style={styles.captionBold}>{buffetProfile.data.eventLocation} </Text></Text>
                     <Text style={styles.caption}> Date: <Text style={styles.captionBold}>{buffetProfile.data.eventDate}</Text></Text>
                     <Text style={styles.caption}> Time: <Text style={styles.captionBold}>{buffetProfile.data.eventTime}</Text></Text >
                     <Text style={styles.caption}> Hosted by: <Text style={styles.captionBold}>{buffetProfile.data.organiserEmail}</Text></Text >
+                    <Text style={styles.caption}> Comments: <Text style={styles.captionBold}>{buffetProfile.data.comments}</Text></Text >
                     <TouchableOpacity style={styles.button} onPress={handleBooking}>
                         <Text style={styles.buttonText}>Add to Booking</Text>
                     </TouchableOpacity>
