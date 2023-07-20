@@ -13,9 +13,6 @@ const BuffetDescriptionByLocation = ({ filterByLocation, id, buffetProfile, user
     useEffect(() => {
         // filters all buffet events that have the location "School of Computing" (filterByLocation)
         filteredBuffetList = buffetProfile.filter(buffet => {
-            if (buffet.data.eventLocation == "CDE") {
-                console.log(buffet.data.eventName)
-            }
             return buffet.data.eventLocation == id
         })
         setBuffetList(filteredBuffetList);

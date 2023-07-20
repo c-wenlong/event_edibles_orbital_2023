@@ -7,11 +7,14 @@ import { useRoute } from '@react-navigation/core';
 import { UserCircleIcon, ArchiveBoxArrowDownIcon, ArrowRightIcon, BellIcon, ChatBubbleLeftRightIcon } from 'react-native-heroicons/outline';
 // FIREBASE
 import { signOut } from 'firebase/auth';
-import { auth, } from '../firebase/firebase'
+import { auth } from '../firebase/firebase'
+
+import ImageUpload from '../components/ImageUpload';
 
 const UserProfilePage = ({ navigation }) => {
     // Variable States
     const [userProfile, setUserProfile] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
     // INITIALISE USERDATA
     const route = useRoute();
     const param = route.params;
@@ -83,7 +86,8 @@ const UserProfilePage = ({ navigation }) => {
                         </View>
                         <ArrowRightIcon size={40} color={'rgba(100, 214, 255, 0.7)'} />
                     </TouchableOpacity>
-                </View><View style={styles.contentsContainer}>
+                </View>
+                <View style={styles.contentsContainer}>
                     <Text style={styles.description}></Text>
                     <TouchableOpacity style={styles.contents} onPress={handleUploadEvent}>
                         <View style={styles.contents2}>

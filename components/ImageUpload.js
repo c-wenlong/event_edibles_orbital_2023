@@ -3,8 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 //EXPO COMPONENTS
 import * as ImagePicker from 'expo-image-picker'
+// FIREBASE
 
-const ImageUpload = ({ caption, setSelectedImage, selectedImage }) => {
+const ImageUpload = ({ content, setSelectedImage, selectedImage }) => {
     // handles upload of images to storage
     const handleImageSelect = async () => {
         // No permissions request is necessary for launching the image library
@@ -14,19 +15,25 @@ const ImageUpload = ({ caption, setSelectedImage, selectedImage }) => {
             aspect: [4, 3],
             quality: 1,
         });
-        // if the user did not cancel the submission
-        if (!result.canceled) {
-            setSelectedImage(result.assets[0].uri);
-        }
-    };
-
+        setSelectedImage(result) // must return the array
+    }
+    // handles removal of image
+    const handleImageRemove = () => {
+        setSelectedImage(null);
+    }
+    // App interface
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={handleImageSelect}>
-                <Text style={styles.buttonText}>{caption}</Text>
-            </TouchableOpacity>
+            {!selectedImage
+                ? <TouchableOpacity style={styles.button} onPress={handleImageSelect}>
+                    <Text style={styles.buttonText}>Select {content}</Text>
+                </TouchableOpacity>
+                : <TouchableOpacity style={styles.button} onPress={handleImageRemove}>
+                    <Text style={styles.buttonText}>Remove {content}</Text>
+                </TouchableOpacity>
+            }
             {selectedImage && (
-                <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+                <Image source={{ uri: selectedImage.assets[0].uri }} style={styles.selectedImage} />
             )}
         </View>
     )

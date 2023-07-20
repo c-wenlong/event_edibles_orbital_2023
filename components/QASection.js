@@ -2,11 +2,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const QASection = ({ Q, A }) => {
+const QASection = ({ Q, A, index }) => {
     return (
         <View style={styles.container}>
-            <Text style={styles.question}>{Q}</Text>
-            <Text style={styles.answer}>{A}</Text>
+            <Text style={styles.question}>{index + 1}. {Q}</Text>
+            <Text style={styles.answer}>Ans: {A}</Text>
         </View>
     )
 }
@@ -16,6 +16,8 @@ export default QASection
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginBottom: 15,
+        backgroundColor: 'white',
     },
     question: {
         fontFamily: 'montserrat-bold',

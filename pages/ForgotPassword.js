@@ -1,6 +1,10 @@
 // REACT COMPONENT
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ImageBackground, Keyboard, TouchableWithoutFeedback } from 'react-native';
+// CUSTOM COMPONENTS
+import QuestionAnswer from '../components/QuestionAnswer'
+// FIREBASE
+import { auth } from '../firebase/firebase'
 
 const ForgotPassword = ({ navigation }) => {
     // UserInput State
@@ -13,6 +17,13 @@ const ForgotPassword = ({ navigation }) => {
         } else {
             setEmail("");
             // Sends an email for user to reset password
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert('Password Reset Email Sent', 'Please check your email to reset your password.');
+                })
+                .catch((error) => {
+                    alert('Password Reset Failed' + error.message);
+                });
         }
     }
     // App Interface

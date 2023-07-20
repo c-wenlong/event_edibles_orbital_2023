@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 // NAVIGATION 
 import { useNavigation } from '@react-navigation/native'
+// FIREBASE
+import { storage } from '../firebase/firebase'
 
 const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, eventTime, userProfile }) => {
     // Navigation
@@ -10,6 +12,7 @@ const BuffetDescription = ({ id, imgUrl, eventName, eventLocation, eventDate, ev
     const handleOpenBuffet = () => {
         navigation.navigate('BuffetDetails', { buffetProfile: id, userProfile: userProfile });
     };
+    // App interface
     return (
         <TouchableOpacity style={styles.container} onPress={handleOpenBuffet}>
             {imgUrl ? <Image

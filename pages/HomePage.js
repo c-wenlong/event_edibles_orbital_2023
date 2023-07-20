@@ -14,6 +14,7 @@ const HomePage = ({ navigation }) => {
     const [buffetList, setBuffetList] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
+    const [pageLoaded, setPageLoaded] = useState(false); // second layer if buffetList empty, page still loads as long as the firestore has been accessed
     // INITIALISE USER && BUFFET DATA
     useEffect(() => {
         // Get userID as the document code
@@ -42,6 +43,7 @@ const HomePage = ({ navigation }) => {
                 setBuffetList(data);
             })
             .catch(error => alert(error.message))
+        setPageLoaded(true)
     }, [])
     // Handles the opening of the userprofile page
     const handleUserProfile = () => {
@@ -79,7 +81,7 @@ const HomePage = ({ navigation }) => {
         { label: 'Yale-NUS College', value: 'YNC' },
     ] // use this list to nested map each location to each BuffetEventsByLocation
     // App interface
-    if (!buffetList.length) {
+    if (!buffetList.length && !pageLoaded) {
         return <ActivityIndicator />;
     } else {
         return (
@@ -109,42 +111,14 @@ const HomePage = ({ navigation }) => {
                         {/* Map each buffet location with its corresponding horizontal ScrollView */}
                         {buffetLocations.map(location => {
                             return (<BuffetDescriptionByLocation key={location.value} filterByLocation={location.label} id={location.value} buffetProfile={buffetList} userProfile={userProfile} />)
-                            {/* value is UTOWN, label is University Town */}
+                            {/* value is UTOWN, label is University Town */ }
                         })}
-                        {/* Loading Each buffet */}
-                        {/*buffetList.map((buffet) => {
-                            try {
-                                return (<BuffetDescription
-                                    key={buffet.id}
-                                    id={buffet.id}
-                                    imgUrl='../assets/images/buffet1.jpg'
-                                    eventName={buffet.data.eventName}
-                                    eventLocation={buffet.data.eventLocation}
-                                    eventDate={buffet.data.eventDate}
-                                    eventTime={buffet.data.eventTime}
-                                    userProfile={userProfile}
-                                />
-
-                                )
-                            } catch (error) {
-                                alert(error.message)
-                            }
-                        })*/}
                     </ScrollView>
                 </View>
             </ImageBackground >
         )
     }
 }
-
-
-/* <BuffetDescriptionByLocation
-    FilterByLocation="School Of Computing"
-    key="School Of Computing"
-    id="School Of Computing"
-    buffetProfile={buffetProfile}
-    userProfile={userProfile}
-    /> */
 export default HomePage;
 
 const styles = StyleSheet.create({

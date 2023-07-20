@@ -1,6 +1,6 @@
 // REACT COMPONENTS
 import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 // FIREBASE
 import { db, auth, storage } from '../firebase/firebase';
 // ICONS
@@ -21,10 +21,12 @@ const UploadEventsPage = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     // handles updating of form info onto database
-    const handleSubmitForm = () => {
+    const handleSubmitForm = async () => {
         if (eventTime.trim() === '' || eventLocation.trim() === '' || eventDate.trim() === '' || eventTime.trim() === '') {
             alert("Please Fill In All Blanks Before Submitting!")
         } else {
+            const downloadURL = await handleImageUpload(); // uploads the picture to firebase storage
+            // adds buffet information into firestore
             db.collection('Buffet Events')
                 .add({
                     eventName: eventName,
@@ -32,13 +34,41 @@ const UploadEventsPage = () => {
                     eventDate: eventDate,
                     eventTime: eventTime,
                     organiserEmail: auth.currentUser.email,
-                    image: selectedImage,
+                    image: downloadURL,
                     comments: comments,
                     userAdded: [],
                 });
-            setIsSubmitted(true);
         }
+        setIsSubmitted(true); // set submitted to be true to refresh a new page
     }
+    // handles uploading to storage
+    const handleImageUpload = async () => {
+        // creates filename
+        const eventname = eventName.replace(/[ /]/g, '_'); // Remove spaces and slashes from eventName
+        const eventlocation = eventLocation.replace(/[ /]/g, '_'); // Remove spaces from eventLocation
+        const eventdate = eventDate.replace(/[ /]/g, '_'); // Remove spaces from eventDate
+        const filename = `${eventname}_${eventlocation}_${eventdate}`;
+        // upload image onto storage
+        const downloadURL = await uploadImage(selectedImage, filename);
+        return downloadURL; // return downloadURL directly instead of changing state because there are 2 dependencies with differing formats occupying the same state
+    };
+    // handles uploading
+    const uploadImage = async (assets, filename) => {
+        try {
+            console.log(assets)
+            const response = await fetch(assets.assets[0].uri);
+            const blob = await response.blob();
+            // Create a reference to the image file in Firebase Storage
+            const imageRef = storage.ref().child(`buffetImages/${filename}`);
+            // Upload the image file to Firebase Storage
+            await imageRef.put(blob);
+            // Get the download URL of the uploaded image
+            const downloadURL = await imageRef.getDownloadURL();
+            return downloadURL;
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
     // Refreshes the form
     const handleNewForm = () => {
         setIsSubmitted(false);
@@ -47,6 +77,7 @@ const UploadEventsPage = () => {
         setEventDate('');
         setEventTime('');
         setComments('');
+        setSelectedImage(null);
     }
     // Dropdown List options
     const dropdownItems = [
@@ -80,7 +111,7 @@ const UploadEventsPage = () => {
                         <DateTimeSelector caption={"When is it taking place?"} placeholder={"Select Date"} value={eventDate} mode={'date'} onChange={setEventDate} />
                         <DateTimeSelector caption={"What time is it taking place?"} placeholder={"Select Time"} value={eventTime} mode={'time'} onChange={setEventTime} />
                         <QuestionAnswer caption={"Additional Comments?"} placeholder={'Exact Location...'} value={comments} onChangeText={text => setComments(text)} />
-                        <ImageUpload caption={"Select Image"} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
+                        <ImageUpload content={"Image"} setSelectedImage={setSelectedImage} selectedImage={selectedImage} />
                     </View>
                     {/* Submit Button */}
                     <View style={styles.bottom}>
