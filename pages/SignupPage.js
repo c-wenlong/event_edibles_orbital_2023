@@ -106,7 +106,6 @@ const SignupPage = ({ navigation }) => {
             </TouchableWithoutFeedback>
         </ImageBackground>
     );
-
 };
 
 const styles = StyleSheet.create({

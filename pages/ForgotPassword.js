@@ -41,7 +41,7 @@ const ForgotPassword = ({ navigation }) => {
                         <TouchableOpacity style={styles.button} onPress={handleForgetPassword}>
                             <Text style={styles.buttonText}>Retrieve Password</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Log In')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('LogIn')}>
                             <Text style={styles.nav}>Back to Log in</Text>
                         </TouchableOpacity>
                     </View>
